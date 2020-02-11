@@ -1,14 +1,83 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Title</title>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="css/uikit.min.css" />
-        <script src="js/uikit.min.js"></script>
-        <script src="js/uikit-icons.min.js"></script>
-    </head>
-    <body>
-        <p>hello</p>
-    </body>
+
+<head>
+    <title>Title</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/uikit.min.css" />
+    <script src="js/uikit.min.js"></script>
+    <script src="js/uikit-icons.min.js"></script>
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/list.js"></script>
+    <script src="js/list.pagination.min.js"></script>
+</head>
+
+<body>
+    <div id="hacker-list">
+        <div>検索</div>
+        <input type="text" class="search">
+        <table border="1" class="uk-margin-top">
+            <thead>
+                <tr>
+                    <th class="sort" data-sort="name">施設名</th>
+                    <th class="sort" data-sort="pref">都道府県</th>
+                    <th class="sort" data-sort="city">市区町村</th>
+                    <th class="sort" data-sort="address">番地以下</th>
+                    <th class="sort" data-sort="category">分類</th>
+                </tr>
+            </thead>
+            <tbody class="list">
+                <!-- <tr>
+                    <td class="name">Java</td>
+                    <td class="pref">Java</td>
+                    <td class="city">Java</td>
+                    <td class="address">Jonny</td>
+                    <td class="category">Stockholm</td>
+                </tr> -->
+            </tbody>
+        </table>
+
+        <!-- <table>
+            <tr>
+                <td>
+                    <input type="text" id="use-field" placeholder="use" />
+                </td>
+                <td>
+                    <input type="text" id="name-field" placeholder="name" />
+                </td>
+                <td>
+                    <input type="text" id="city-field" placeholder="city" />
+                </td>
+                <td>
+                    <button id="add-btn">Add</button>
+                </td>
+            </tr>
+        </table> -->
+    </div>
+    <script type="text/javascript">
+
+        var options = {
+            valueNames: ['name', 'pref', 'city', 'address', 'category'],
+            item: '<tr><td class="name"></td><td class="pref"></td><td class="city"></td><td class="address"></td><td class="category"></td></tr>'
+        };
+        var hackerList = new List('hacker-list', options);
+
+        var request = new XMLHttpRequest();
+        request.open("get", "https://raw.githubusercontent.com/yamauchist/test/master/docs/data.csv", true);
+        request.send(null);
+
+        request.onload = function () {
+            var result = [];
+            var line = request.responseText.split("\n");
+
+            for (var i = 1; i < line.length; ++i) {
+                if (line[i]) {
+                    result[i] = line[i].split(',');
+                    hackerList.add({ name: result[i][0], pref: result[i][1], category: result[i][3] });
+                }
+            }
+        }
+    </script>
+</body>
 </html>
