@@ -26,10 +26,10 @@
             </div>
             <div class="uk-navbar-left uk-visible@s">
                 <ul class="uk-navbar-nav">
-                    <li class="uk-active">
+                    <li>
                         <a href="index.html">音楽練習場</a>
                     </li>
-                    <li>
+                    <li  class="uk-active">
                         <a href="concerthall.html">コンサートホール</a>
                     </li>
                 </ul>
@@ -128,7 +128,7 @@
         var hackerList = new List('hacker-list', options);
 
         var request = new XMLHttpRequest();
-        request.open("get", "https://raw.githubusercontent.com/yamauchist/test/master/docs/data.csv", true);
+        request.open("get", "https://raw.githubusercontent.com/yamauchist/test/master/docs/concerthall.csv", true);
         request.send(null);
 
         request.onload = function () {
