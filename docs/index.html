@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 
 <head>
     <title>Title</title>
@@ -14,6 +14,57 @@
 </head>
 
 <body>
+    <header>
+        <nav class="uk-background-secondary uk-light" uk-navbar>
+            <div class="uk-navbar-left uk-hidden@s">
+                <a href="#offcanvas" class="uk-navbar-toggle uk-text-large" uk-toggle><i class="fas fa-bars"></i></a>
+            </div>
+            <div class="uk-navbar-left uk-text-bold">
+                <a class="uk-navbar-item uk-logo" href="index.html">関西音楽練習場リスト</a>
+            </div>
+            <div class="uk-navbar-left uk-visible@s">
+                <ul class="uk-navbar-nav">
+                    <li><a href="concerthall.html">コンサートホール</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <div class="uk-width-large">
+        <ul class=" uk-width-large" uk-accordion>
+            <li><a class="uk-accordion-title" href="#">絞り込み</a>
+                <div class="uk-accordion-content">
+                    施設名
+                    <input id="cond_name" class="uk-input" type="text" placeholder="" name="j_username">
+                    都道府県
+                    <select id="cond_group" class="uk-select">
+                        <option selected></option>
+                        <option>大阪府</option>
+                        <option>京都府</option>
+                        <option>兵庫県</option>
+                        <option>滋賀県</option>
+                        <option>奈良県</option>
+                    </select>
+                    市区町村
+                    <input id="cond_name" class="uk-input" type="text" placeholder="" name="j_username">
+                    名前
+                    <input id="cond_name" class="uk-input" type="text" placeholder="" name="j_username">
+                    分類
+                    <select id="cond_group" class="uk-select">
+                        <option selected></option>
+                        <option>アンサンブル用</option>
+                        <option>オーケストラ用</option>
+                    </select>
+                    最寄駅
+                    <select id="cond_group" class="uk-select">
+                        <option selected></option>
+                    </select>
+                    <button id="serach_btn" type="button"
+                        class="uk-button uk-button-small uk-button-default uk-margin-small"><i
+                            class="fas fa-search"></i>絞り込む</button>
+                </div>
+            </li>
+        </ul>
+    </div>
     <div id="hacker-list">
         <div>検索</div>
         <input type="text" class="search">
@@ -80,4 +131,5 @@
         }
     </script>
 </body>
+
 </html>
