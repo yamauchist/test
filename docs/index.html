@@ -72,20 +72,42 @@
             <thead>
                 <tr>
                     <th class="sort" data-sort="name">施設名</th>
+                    <th class="sort" data-sort="room">部屋名</th>
                     <th class="sort" data-sort="pref">都道府県</th>
                     <th class="sort" data-sort="city">市区町村</th>
                     <th class="sort" data-sort="address">番地以下</th>
                     <th class="sort" data-sort="category">分類</th>
+                    <th class="sort" data-sort="station">最寄駅</th>
+                    <th class="sort" data-sort="onfoot">最寄駅徒歩[分]</th>
+                    <th class="sort" data-sort="area">面積[㎡]</th>
+                    <th class="sort" data-sort="capacity">定員[人]</th>
+                    <th class="sort" data-sort="fee">利用料(目安)</th>
+                    <th class="sort" data-sort="parking">駐車場</th>
+                    <th class="sort" data-sort="piano">ピアノ有無</th>
+                    <th class="sort" data-sort="percussion">打楽器貸出</th>
+                    <th class="sort" data-sort="stand">譜面台貸出</th>
+                    <th class="sort" data-sort="description">備考</th>
                 </tr>
             </thead>
             <tbody class="list">
-                <!-- <tr>
-                    <td class="name">Java</td>
-                    <td class="pref">Java</td>
-                    <td class="city">Java</td>
-                    <td class="address">Jonny</td>
-                    <td class="category">Stockholm</td>
-                </tr> -->
+                <tr>
+                    <td class="name"></td>
+                    <td class="room"></td>
+                    <td class="pref"></td>
+                    <td class="city"></td>
+                    <td class="address"></td>
+                    <td class="category"></td>
+                    <td class="station"></td>
+                    <td class="onfoot"></td>
+                    <td class="area"></td>
+                    <td class="capacity"></td>
+                    <td class="fee"></td>
+                    <td class="parking"></td>
+                    <td class="piano"></td>
+                    <td class="percussion"></td>
+                    <td class="stand"></td>
+                    <td class="description"></td>
+                </tr>
             </tbody>
         </table>
 
@@ -106,11 +128,20 @@
             </tr>
         </table> -->
     </div>
+    <td class="station"></td>
+                    <td class="onfoot"></td>
+                    <td class="area"></td>
+                    <td class="capacity"></td>
+                    <td class="fee"></td>
+                    <td class="parking"></td>
+                    <td class="piano"></td>
+                    <td class="percussion"></td>
+                    <td class="stand"></td>
+                    <td class="description"></td>
     <script type="text/javascript">
 
         var options = {
-            valueNames: ['name', 'pref', 'city', 'address', 'category'],
-            item: '<tr><td class="name"></td><td class="pref"></td><td class="city"></td><td class="address"></td><td class="category"></td></tr>'
+            valueNames: ['name', 'room', 'pref', 'city', 'address', 'category', 'station', 'onfoot', 'area', 'capacity', 'fee', 'parking', 'piano', 'stand', 'stand', 'description'],
         };
         var hackerList = new List('hacker-list', options);
 
@@ -125,7 +156,23 @@
             for (var i = 1; i < line.length; ++i) {
                 if (line[i]) {
                     result[i] = line[i].split(',');
-                    hackerList.add({ name: result[i][0], pref: result[i][1], category: result[i][3] });
+                    hackerList.add(
+                        {
+                            name: result[i][0],
+                            room: result[i][1],
+                            pref: result[i][2],
+                            city: result[i][3],
+                            address: result[i][4],
+                            station: result[i][5],
+                            area: result[i][6],
+                            capacity: result[i][7],
+                            fee: result[i][8],
+                            parking: result[i][9],
+                            piano: result[i][10],
+                            percussion: result[i][11],
+                            stand: result[i][12],
+                            description: result[i][13],
+                        });
                 }
             }
         }
