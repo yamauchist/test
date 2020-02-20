@@ -57,8 +57,8 @@
                     </div>
                     <div class="uk-modal-body" uk-overflow-auto>
                         施設名
-                        <input id="cond_name" class="uk-input" type="text" placeholder="" name="j_username"> 都道府県
-                        <select id="cond_group" class="uk-select">
+                        <input class="uk-input" type="text" placeholder="" name="name-input"> 都道府県
+                        <select name="pref-select" class="uk-select">
                             <option selected></option>
                             <option>大阪府</option>
                             <option>京都府</option>
@@ -81,14 +81,15 @@
                     </div>
                     <div class="uk-modal-footer uk-text-right">
                         <button class="uk-button uk-button-default uk-modal-close" type="button">キャンセル</button>
-                        <button class="uk-button uk-button-primary uk-modal-close" type="button">検索</button>
+                        <button class="uk-button uk-button-primary uk-modal-close" type="button"
+                            id="search-button">検索</button>
                     </div>
                 </div>
             </div>
         </div>
         <div id="hacker-list">
             <ul class="list uk-list  uk-list-divider">
-                <li>
+                <!-- <li>
                     <p class="uk-text-lead">
                         <span class="name"></span>
                         <span class="room"></span>
@@ -115,8 +116,7 @@
                         <span class="stand"></span>
                     </div>
                     <div class="url"></div>
-
-                </li>
+                </li> -->
             </ul>
             <!-- <table border="1" class="uk-margin-top">
                 <thead>
@@ -169,6 +169,34 @@
 
         var options = {
             valueNames: ['name', 'room', 'pref', 'city', 'address', 'url', 'category', 'station', 'onfoot', 'area', 'capacity', 'fee', 'parking', 'piano', 'stand', 'stand', 'description'],
+            item: `<li>
+                    <p class="uk-text-lead">
+                        <span class="name"></span>
+                        <span class="room"></span>
+                        <span class="category uk-label"></span>
+                    </p>
+                    <div>
+                        <span class="pref"></span>
+                        <span class="city"></span>
+                        <span class="address"></span>
+                    </div>
+                    <div class="uk-text-meta">
+                        <span class="station"></span>
+                        <span class="onfoot"></span>
+                    </div>
+                    <div>
+                        <span class="area"></span>
+                        <span class="capacity"></span>
+                        <span class="fee"></span>
+                    </div>
+                    <div>
+                        <span class="parking"></span>
+                        <span class="piano"></span>
+                        <span class="percussion"></span>
+                        <span class="stand"></span>
+                    </div>
+                    <div class="url"></div>
+                </li>`
         };
         var hackerList = new List('hacker-list', options);
 
@@ -207,6 +235,29 @@
                 }
             }
         }
+
+        $('#search-button').on('click', function () {
+            console.log($('[name="pref-select"]').val());
+            hackerList.filter(
+                function (item) {
+                    var isShown = true;
+                    var name = $('[name="name-input"]').val();
+                    if (name) {
+                        console.log(item.values()['name']);
+                        if (!item.values()['name'].includes(name)) {
+                            isShown = false;
+                        }
+                    }
+                    var pref = $('[name="pref-select"]').val();
+                    if (pref) {
+                        if (item.values()['pref'] != $('[name="pref-select"]').val()) {
+                            isShown = false;
+                        }
+                    }
+                    return isShown;
+                }
+            );
+        });
     </script>
 </body>
 
