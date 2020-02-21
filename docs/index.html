@@ -57,18 +57,27 @@
                     </div>
                     <div class="uk-modal-body" uk-overflow-auto>
                         施設名
-                        <input class="uk-input" type="text" placeholder="" name="name-input"> 都道府県
-                        <select name="pref-select" class="uk-select">
-                            <option selected></option>
-                            <option>大阪府</option>
-                            <option>京都府</option>
-                            <option>兵庫県</option>
-                            <option>滋賀県</option>
-                            <option>奈良県</option>
-                        </select>
-                        市区町村
-                        <input id="cond_name" class="uk-input" type="text" placeholder="" name="j_username"> 名前
-                        <input id="cond_name" class="uk-input" type="text" placeholder="" name="j_username"> 分類
+                        <input class="uk-input" type="text" placeholder="" name="name-input">
+
+                        <ul uk-accordion="multiple: true">
+                            <li class="uk-open">
+                                <a class="uk-accordion-title" href="#">都道府県</a>
+                                <div class="uk-accordion-content">
+                                    <ul id="prefList" class="uk-list">
+
+                                    </ul>
+                                </div>
+                            </li>
+                            <li>
+                                <a class="uk-accordion-title" href="#">市区町村</a>
+                                <div class="uk-accordion-content">
+                                    <ul id="cityList" class="uk-list">
+
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                        分類
                         <select id="cond_group" class="uk-select">
                             <option selected></option>
                             <option>アンサンブル用</option>
@@ -208,10 +217,13 @@
             var result = [];
             var line = request.responseText.split("\n");
 
+            var prefSet = new Set();
+            var citySet = new Set();
             for (var i = 1; i < line.length; ++i) {
                 if (line[i]) {
                     result[i] = line[i].split(',');
-
+                    prefSet.add(result[i][2]);
+                    citySet.add(result[i][3]);
                     hackerList.add(
                         {
                             name: result[i][0],
@@ -234,6 +246,19 @@
                         });
                 }
             }
+            var prefArray = Array.from(prefSet);
+            prefArray = prefArray.filter(n => n);
+            prefArray.forEach(function (value) {
+                $('#prefList').append('<li><label><input class="uk-checkbox pref-checkbox" type="checkbox" value="' + value + '" checked>' + value + '</label>');
+            });
+            var cityArray = Array.from(citySet);
+            cityArray = cityArray.filter(n => n);
+            cityArray.forEach(function (value) {
+                $('#cityList').append('<li><label><input class="uk-checkbox city-checkbox" type="checkbox" value="' + value + '" checked>' + value + '</label>');
+            });
+            // for (var item in prefSet.values()) {
+            //     $('[name="pref-select"]').append("<option>" + item + "</option>");
+            // }
         }
 
         $('#search-button').on('click', function () {
@@ -248,11 +273,12 @@
                             isShown = false;
                         }
                     }
-                    var pref = $('[name="pref-select"]').val();
-                    if (pref) {
-                        if (item.values()['pref'] != $('[name="pref-select"]').val()) {
-                            isShown = false;
-                        }
+                    var checkedPref = [];
+                    $('.pref-checkbox:checked').each(function () {
+                        checkedPref.push($(this).val());
+                    });
+                    if (!checkedPref.includes(item.values()['pref'])) {
+                        isShown = false;
                     }
                     return isShown;
                 }
