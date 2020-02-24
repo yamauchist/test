@@ -1,2 +1,12 @@
 
+.list li a {
+    padding: 10px 0;
+    display: block;
+    color: inherit;
+}
+
+    .list li a:hover {
+        background: rgba(0,0,0,.1);
+        text-decoration: none;
+    }
 /* .list li:first-child {display:none;} */

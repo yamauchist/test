@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 
 <head>
@@ -8,7 +8,9 @@
     <link rel="stylesheet" href="css/uikit.min.css" />
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
-        integrity="sha256-UzFD2WYH2U1dQpKDjjZK72VtPeWP50NoJjd26rnAdUI=" crossorigin="anonymous" />
+          integrity="sha256-UzFD2WYH2U1dQpKDjjZK72VtPeWP50NoJjd26rnAdUI=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.0/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.3.0/dist/leaflet.js"></script>
     <script src="js/uikit.min.js"></script>
     <script src="js/uikit-icons.min.js"></script>
     <script src="js/jquery-3.4.1.min.js"></script>
@@ -47,8 +49,9 @@
     </header>
     <main class="uk-padding-small">
         <div class="uk-width-large">
-            <a class="uk-button uk-button-default uk-width-1-1" href="#modal-overflow" uk-toggle> <i
-                    class="fas fa-search"></i>条件検索</a>
+            <a class="uk-button uk-button-default uk-width-1-1" href="#modal-overflow" uk-toggle>
+                <i class="fas fa-search"></i>条件検索
+            </a>
             <div id="modal-overflow" uk-modal>
                 <div class="uk-modal-dialog">
                     <button class="uk-modal-close-default" type="button" uk-close></button>
@@ -63,17 +66,13 @@
                             <li class="uk-open">
                                 <a class="uk-accordion-title" href="#">都道府県</a>
                                 <div class="uk-accordion-content">
-                                    <ul id="prefList" class="uk-list">
-
-                                    </ul>
+                                    <ul id="prefList" class="uk-list"></ul>
                                 </div>
                             </li>
                             <li>
                                 <a class="uk-accordion-title" href="#">市区町村</a>
                                 <div class="uk-accordion-content">
-                                    <ul id="cityList" class="uk-list">
-
-                                    </ul>
+                                    <ul id="cityList" class="uk-list"></ul>
                                 </div>
                             </li>
                         </ul>
@@ -91,8 +90,26 @@
                     <div class="uk-modal-footer uk-text-right">
                         <button class="uk-button uk-button-default uk-modal-close" type="button">キャンセル</button>
                         <button class="uk-button uk-button-primary uk-modal-close" type="button"
-                            id="search-button">検索</button>
+                                id="search-button">
+                            検索
+                        </button>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="modal-detail" uk-modal>
+            <div class="uk-modal-dialog">
+                <button class="uk-modal-close-default" type="button" uk-close></button>
+                <div class="uk-modal-header">
+                    <h2 class="uk-modal-title" id="dialogTitle">[名前]</h2>
+                </div>
+                <div class="uk-modal-body" uk-overflow-auto>
+                    <span id="dialog_address"></span>
+                    <div id="mapcontainer" style="height:50vh"></div>
+                </div>
+                <div class="uk-modal-footer uk-text-right">
+                    <button class="uk-button uk-button-default uk-modal-close" type="button">閉じる</button>
                 </div>
             </div>
         </div>
@@ -175,37 +192,56 @@
         Copyright &copy; 2020 kansai-orch-map Contributors All Rights Reserved.
     </footer>
     <script type="text/javascript">
+        var map;
+        var markerLayer;
+        function init() {
+            //地図を表示するdiv要素のidを設定
+            map = L.map('mapcontainer');
+            //地図の中心とズームレベルを指定
+            map.setView([35.40, 136], 5);
+            //表示するタイルレイヤのURLとAttributionコントロールの記述を設定して、地図に追加する
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                { attribution: "<a href='http://osm.org/copyright' target='_blank'>OpenStreetMap</a> contributors" }).addTo(map);
+            markerLayer = L.layerGroup().addTo(map);
+        }
+        init();
 
         var options = {
-            valueNames: ['name', 'room', 'pref', 'city', 'address', 'url', 'category', 'station', 'onfoot', 'area', 'capacity', 'fee', 'parking', 'piano', 'stand', 'stand', 'description'],
+            valueNames: ['name', 'room', 'pref', 'city', 'address', 'url', 'category', 'station', 'onfoot', 'area', 'capacity', 'fee', 'parking', 'piano', 'stand', 'stand', 'description', 'latitude', 'longitude'],
             item: `<li>
-                    <p class="uk-text-lead">
-                        <span class="name"></span>
-                        <span class="room"></span>
-                        <span class="category uk-label"></span>
-                    </p>
-                    <div>
-                        <span class="pref"></span>
-                        <span class="city"></span>
-                        <span class="address"></span>
-                    </div>
-                    <div class="uk-text-meta">
-                        <span class="station"></span>
-                        <span class="onfoot"></span>
-                    </div>
-                    <div>
-                        <span class="area"></span>
-                        <span class="capacity"></span>
-                        <span class="fee"></span>
-                    </div>
-                    <div>
-                        <span class="parking"></span>
-                        <span class="piano"></span>
-                        <span class="percussion"></span>
-                        <span class="stand"></span>
-                    </div>
-                    <div class="url"></div>
-                </li>`
+                                 <a href="#modal-detail" class="detail-link" uk-toggle>
+                                                                            <p class="uk-text-lead">
+                                                                                <span class="name"></span>
+                                                                                <span class="room"></span>
+                                                                                <span class="category uk-label"></span>
+                                                                            </p>
+                                                                            <div>
+                                                                                <span class="pref"></span>
+                                                                                <span class="city"></span>
+                                                                                <span class="address"></span>
+                                                                            </div>
+                                                                            <div class="uk-text-meta">
+                                                                                <span class="station"></span>
+                                                                                <span class="onfoot"></span>
+                                                                            </div>
+                                                                            <div>
+                                                                                <span class="area"></span>
+                                                                                <span class="capacity"></span>
+                                                                                <span class="fee"></span>
+                                                                            </div>
+                                                                            <div>
+                                                                                <span class="parking"></span>
+                                                                                <span class="piano"></span>
+                                                                                <span class="percussion"></span>
+                                                                                <span class="stand"></span>
+<div class=uk-hidden>
+                                                                                <span class="latitude"></span>
+                                                                                <span class="longitude"></span>
+</div>
+                                                                            </div>
+                                                                            <div class="url"></div>
+                                            </a>
+                                                                        </li>`
         };
         var hackerList = new List('hacker-list', options);
 
@@ -242,8 +278,12 @@
                             piano: result[i][13] ? 'ピアノ:' + result[i][13] : '',
                             percussion: result[i][14] ? '打楽器貸出:' + result[i][14] : '',
                             stand: result[i][15] ? '譜面台貸出:' + result[i][15] : '',
+                            latitude: result[i][19],
+                            longitude: result[i][18],
                             description: result[i][16],
                         });
+
+                    L.marker([result[i][19], result[i][18]], { title: result[i][0] }).addTo(markerLayer);
                 }
             }
             var prefArray = Array.from(prefSet);
@@ -259,10 +299,18 @@
             // for (var item in prefSet.values()) {
             //     $('[name="pref-select"]').append("<option>" + item + "</option>");
             // }
+
+            $('.detail-link').on('click', function () {
+                $('#dialogTitle').text($(this).find('.name').text());
+                var address = $(this).find('.pref').text() + $(this).find('.city').text() + $(this).find('.address').text();
+                $('#dialog_address').text(address);
+                markerLayer.clearLayers();
+                L.marker([$(this).find('.latitude').text(), $(this).find('.longitude').text()], { title: $(this).find('.name').text() }).addTo(markerLayer);
+                map.setView([$(this).find('.latitude').text(),  $(this).find('.longitude').text()], 15);
+            });
         }
 
         $('#search-button').on('click', function () {
-            console.log($('[name="pref-select"]').val());
             hackerList.filter(
                 function (item) {
                     var isShown = true;
@@ -280,10 +328,13 @@
                     if (!checkedPref.includes(item.values()['pref'])) {
                         isShown = false;
                     }
+                    if (isShown)
+                        L.marker([item.values()['latitude'], item.values()['longitude']], { title: item.values()['name'] }).addTo(markerLayer);
                     return isShown;
                 }
             );
         });
+
     </script>
 </body>
 
