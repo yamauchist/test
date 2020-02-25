@@ -1,11 +1,16 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 
 <head>
-    <title>Title</title>
+    <title>関西音楽練習場リスト</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/uikit.min.css" />
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+          integrity="sha256-UzFD2WYH2U1dQpKDjjZK72VtPeWP50NoJjd26rnAdUI=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.0/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.3.0/dist/leaflet.js"></script>
     <script src="js/uikit.min.js"></script>
     <script src="js/uikit-icons.min.js"></script>
     <script src="js/jquery-3.4.1.min.js"></script>
@@ -14,9 +19,19 @@
 </head>
 
 <body>
+    <div id="offcanvas" uk-offcanvas="overlay: true">
+        <div class="uk-offcanvas-bar uk-padding-remove uk-box-shadow-large">
+            <ul class="uk-nav uk-nav-default side-nav uk-padding-small">
+                <li class="uk-nav-header uk-logo">関西音楽練習場リスト</li>
+                <li><a href="index.html">音楽練習場</a></li>
+                <li class="uk-active"><a href="concerthall.html">コンサートホール</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+        </div>
+    </div>
     <header>
         <nav class="uk-background-secondary uk-light" uk-navbar>
-            <div class="uk-navbar-left uk-hidden@s">
+            <div class="uk-navbar-left">
                 <a href="#offcanvas" class="uk-navbar-toggle uk-text-large" uk-toggle>
                     <i class="fas fa-bars"></i>
                 </a>
@@ -24,106 +39,147 @@
             <div class="uk-navbar-left uk-text-bold">
                 <a class="uk-navbar-item uk-logo" href="index.html">関西音楽練習場リスト</a>
             </div>
-            <div class="uk-navbar-left uk-visible@s">
-                <ul class="uk-navbar-nav">
-                    <li>
-                        <a href="index.html">音楽練習場</a>
-                    </li>
-                    <li  class="uk-active">
-                        <a href="concerthall.html">コンサートホール</a>
-                    </li>
-                </ul>
-            </div>
         </nav>
     </header>
     <main class="uk-padding-small">
         <div class="uk-width-large">
-            <ul class=" uk-width-large" uk-accordion>
-                <li>
-                    <a class="uk-accordion-title" href="#">絞り込み</a>
-                    <div class="uk-accordion-content">
-                        施設名
-                        <input id="cond_name" class="uk-input" type="text" placeholder="" name="j_username"> 都道府県
-                        <select id="cond_group" class="uk-select">
-                            <option selected></option>
-                            <option>大阪府</option>
-                            <option>京都府</option>
-                            <option>兵庫県</option>
-                            <option>滋賀県</option>
-                            <option>奈良県</option>
-                        </select>
-                        市区町村
-                        <input id="cond_name" class="uk-input" type="text" placeholder="" name="j_username"> 名前
-                        <input id="cond_name" class="uk-input" type="text" placeholder="" name="j_username"> 分類
-                        <select id="cond_group" class="uk-select">
-                            <option selected></option>
-                            <option>アンサンブル用</option>
-                            <option>オーケストラ用</option>
-                        </select>
-                        最寄駅
-                        <select id="cond_group" class="uk-select">
-                            <option selected></option>
-                        </select>
-                        <button id="serach_btn" type="button" class="uk-button uk-button-small uk-button-default uk-margin-small">
-                            <i class="fas fa-search"></i>絞り込む</button>
+            <a class="uk-button uk-button-default uk-width-1-1" href="#modal-overflow" uk-toggle>
+                <i class="fas fa-search"></i>条件検索
+            </a>
+            <div id="modal-overflow" uk-modal>
+                <div class="uk-modal-dialog">
+                    <button class="uk-modal-close-default" type="button" uk-close></button>
+                    <div class="uk-modal-header">
+                        <h2 class="uk-modal-title">条件検索</h2>
                     </div>
-                </li>
-            </ul>
+                    <div class="uk-modal-body" uk-overflow-auto>
+                        施設名
+                        <input class="uk-input" type="text" placeholder="" name="name-input">
+                        <ul uk-accordion="multiple: true">
+                            <li class="uk-open">
+                                <a class="uk-accordion-title" href="#">都道府県</a>
+                                <div class="uk-accordion-content">
+                                    <ul id="prefList" class="uk-list"></ul>
+                                </div>
+                            </li>
+                            <li>
+                                <a class="uk-accordion-title" href="#">市区町村</a>
+                                <div class="uk-accordion-content">
+                                    <ul id="cityList" class="uk-list"></ul>
+                                </div>
+                            </li>
+                            <li>
+                                <a class="uk-accordion-title" href="#">最寄駅</a>
+                                <div class="uk-accordion-content">
+                                    <ul id="stationList" class="uk-list"></ul>
+                                </div>
+                            </li>
+                            <li>
+                                <a class="uk-accordion-title" href="#">分類</a>
+                                <div class="uk-accordion-content">
+                                    <ul id="categoryList" class="uk-list"></ul>
+                                </div>
+                            </li>
+                        </ul>
+                        その他条件
+                        <ul class="uk-list">
+                            <li>
+                                <label>
+                                    <input id="pianoCheckbox" class="uk-checkbox" type="checkbox"
+                                           value="piano">ピアノあり
+                                </label>
+                            </li>
+                            <li>
+                                <label>
+                                    <input id="percCheckbox" class="uk-checkbox" type="checkbox"
+                                           value="perc">打楽器貸出あり
+                                </label>
+                            </li>
+                            <li>
+                                <label>
+                                    <input id="standCheckbox" class="uk-checkbox" type="checkbox"
+                                           value="stand">譜面台貸出あり
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="uk-modal-footer uk-text-right">
+                        <button class="uk-button uk-button-default uk-modal-close" type="button">キャンセル</button>
+                        <button class="uk-button uk-button-primary uk-modal-close" type="button" id="search-button">
+                            検索
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="modal-detail" uk-modal>
+            <div class="uk-modal-dialog">
+                <button class="uk-modal-close-default" type="button" uk-close></button>
+                <div class="uk-modal-header">
+                    <h2 class="uk-modal-title" id="dialogTitle">[名前]</h2>
+                </div>
+                <div class="uk-modal-body" uk-overflow-auto>
+                    <span id="dialog_address"></span>
+                    <div id="mapcontainer" style="height:50vh"></div>
+                    <a id="maplink" href="https://www.google.com/maps/search/?api=1&query=47.5951518,-122.3316393">地図アプリで見る</a>
+                </div>
+            </div>
         </div>
         <div id="hacker-list">
-            <div>検索</div>
-            <input type="text" class="search">
-            <table border="1" class="uk-margin-top">
-                <thead>
-                    <tr>
-                        <th class="sort" data-sort="name">施設名</th>
-                        <th class="sort" data-sort="room">部屋名</th>
-                        <th class="sort" data-sort="pref">都道府県</th>
-                        <th class="sort" data-sort="city">市区町村</th>
-                        <th class="sort" data-sort="address">番地以下</th>
-                        <th class="sort" data-sort="category">分類</th>
-                        <th class="sort" data-sort="station">最寄駅</th>
-                        <th class="sort" data-sort="onfoot">最寄駅徒歩[分]</th>
-                        <th class="sort" data-sort="area">面積[㎡]</th>
-                        <th class="sort" data-sort="capacity">定員[人]</th>
-                        <th class="sort" data-sort="fee">利用料(目安)</th>
-                        <th class="sort" data-sort="parking">駐車場</th>
-                        <th class="sort" data-sort="piano">ピアノ有無</th>
-                        <th class="sort" data-sort="percussion">打楽器貸出</th>
-                        <th class="sort" data-sort="stand">譜面台貸出</th>
-                        <th class="sort" data-sort="description">備考</th>
-                    </tr>
-                </thead>
-                <tbody class="list">
-                    <tr>
-                        <td class="name"></td>
-                        <td class="room"></td>
-                        <td class="pref"></td>
-                        <td class="city"></td>
-                        <td class="address"></td>
-                        <td class="category"></td>
-                        <td class="station"></td>
-                        <td class="onfoot"></td>
-                        <td class="area"></td>
-                        <td class="capacity"></td>
-                        <td class="fee"></td>
-                        <td class="parking"></td>
-                        <td class="piano"></td>
-                        <td class="percussion"></td>
-                        <td class="stand"></td>
-                        <td class="description"></td>
-                    </tr>
-                </tbody>
-            </table>
+            <ul class="list uk-list  uk-list-divider"></ul>
         </div>
     </main>
     <footer class="uk-padding-small uk-background-secondary uk-light">
         Copyright &copy; 2020 kansai-orch-map Contributors All Rights Reserved.
     </footer>
     <script type="text/javascript">
+        var map;
+        var markerLayer;
+        function init() {
+            map = L.map('mapcontainer');
+            map.setView([35.40, 136], 5);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: "<a href='http://osm.org/copyright' target='_blank'>OpenStreetMap</a> contributors" }).addTo(map);
+            markerLayer = L.layerGroup().addTo(map);
+        }
+        init();
 
         var options = {
-            valueNames: ['name', 'room', 'pref', 'city', 'address', 'category', 'station', 'onfoot', 'area', 'capacity', 'fee', 'parking', 'piano', 'stand', 'stand', 'description'],
+            valueNames: ['name', 'room', 'pref', 'city', 'address', 'url', 'category', 'station', 'onfoot', 'area', 'capacity', 'fee', 'parking', 'piano', 'percussion', 'stand', 'description', 'latitude', 'longitude'],
+            item: `<li>
+                                     <a href="#modal-detail" class="detail-link" uk-toggle>
+                                                                                <p class="uk-text-lead">
+                                                                                    <span class="name"></span>
+                                                                                    <span class="room"></span>
+                                                                                    <span class="category uk-label"></span>
+                                                                                </p>
+                                                                                <div>
+                                                                                    <span class="pref"></span>
+                                                                                    <span class="city"></span>
+                                                                                    <span class="address"></span>
+                                                                                </div>
+                                                                                <div class="uk-text-meta">
+                                                                                    <span class="station"></span>
+                                                                                    <span class="onfoot"></span>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <span class="area"></span>
+                                                                                    <span class="capacity"></span>
+                                                                                    <span class="fee"></span>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <span class="parking"></span>
+                                                                                    <span class="piano"></span>
+                                                                                    <span class="percussion"></span>
+                                                                                    <span class="stand"></span>
+                                                                                    <div class=uk-hidden>
+                                                                                        <span class="latitude"></span>
+                                                                                        <span class="longitude"></span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="url"></div>
+                                                </a>
+                                                                            </li>`
         };
         var hackerList = new List('hacker-list', options);
 
@@ -134,10 +190,17 @@
         request.onload = function () {
             var result = [];
             var line = request.responseText.split("\n");
-
+            var prefSet = new Set();
+            var citySet = new Set();
+            var stationSet = new Set();
+            var categorySet = new Set();
             for (var i = 1; i < line.length; ++i) {
                 if (line[i]) {
                     result[i] = line[i].split(',');
+                    prefSet.add(result[i][2]);
+                    citySet.add(result[i][3]);
+                    stationSet.add(result[i][7]);
+                    categorySet.add(result[i][6]);
                     hackerList.add(
                         {
                             name: result[i][0],
@@ -145,19 +208,128 @@
                             pref: result[i][2],
                             city: result[i][3],
                             address: result[i][4],
-                            station: result[i][5],
-                            area: result[i][6],
-                            capacity: result[i][7],
-                            fee: result[i][8],
-                            parking: result[i][9],
-                            piano: result[i][10],
-                            percussion: result[i][11],
-                            stand: result[i][12],
-                            description: result[i][13],
+                            url: result[i][5],
+                            category: result[i][6],
+                            station: result[i][7] ? result[i][7] + '駅' : '',
+                            onfoot: result[i][8] ? '徒歩' + result[i][8] + '分' : '',
+                            area: result[i][9],
+                            capacity: result[i][10],
+                            fee: result[i][11],
+                            parking: result[i][12] ? '駐車場:' + result[i][12] : '',
+                            piano: result[i][13] ? 'ピアノ:' + result[i][13] : '',
+                            percussion: result[i][14] ? '打楽器貸出:' + result[i][14] : '',
+                            stand: result[i][15] ? '譜面台貸出:' + result[i][15] : '',
+                            latitude: result[i][19],
+                            longitude: result[i][18],
+                            description: result[i][16],
                         });
                 }
             }
+            var prefArray = Array.from(prefSet);
+            prefArray = prefArray.filter(n => n);
+            prefArray.forEach(function (value) {
+                $('#prefList').append('<li><label><input class="uk-checkbox pref-checkbox" type="checkbox" value="' + value + '" >' + value + '</label>');
+            });
+
+            var cityArray = Array.from(citySet);
+            cityArray = cityArray.filter(n => n);
+            cityArray.forEach(function (value) {
+                $('#cityList').append('<li><label><input class="uk-checkbox city-checkbox" type="checkbox" value="' + value + '" >' + value + '</label>');
+            });
+
+            var stationArray = Array.from(stationSet);
+            stationArray = stationArray.filter(n => n);
+            stationArray.forEach(function (value) {
+                $('#stationList').append('<li><label><input class="uk-checkbox station-checkbox" type="checkbox" value="' + value + '駅" >' + value + '駅</label>');
+            });
+
+            var categoryArray = Array.from(categorySet);
+            categoryArray = categoryArray.filter(n => n);
+            categoryArray.forEach(function (value) {
+                $('#categoryList').append('<li><label><input class="uk-checkbox category-checkbox" type="checkbox" value="' + value + '" >' + value + '</label>');
+            });
+
+            $('.detail-link').on('click', function () {
+                $('#dialogTitle').text($(this).find('.name').text());
+                var address = $(this).find('.pref').text() + $(this).find('.city').text() + $(this).find('.address').text();
+                $('#dialog_address').text(address);
+                markerLayer.clearLayers();
+                L.marker([$(this).find('.latitude').text(), $(this).find('.longitude').text()], { title: $(this).find('.name').text() }).addTo(markerLayer);
+                map.setView([$(this).find('.latitude').text(), $(this).find('.longitude').text()], 15);
+                $('#maplink').attr('href', 'https://www.google.com/maps/search/?api=1&query=' + $(this).find('.latitude').text() + ',' + $(this).find('.longitude').text());
+            });
         }
+
+        $('#search-button').on('click', function () {
+            hackerList.filter(
+                function (item) {
+                    var isShown = true;
+                    var name = $('[name="name-input"]').val();
+                    if (name) {
+                        console.log(item.values()['name']);
+                        if (!item.values()['name'].includes(name)) {
+                            isShown = false;
+                        }
+                    }
+                    var checkedPref = [];
+                    $('.pref-checkbox:checked').each(function () {
+                        checkedPref.push($(this).val());
+                    });
+                    if (checkedPref.length > 0) {
+                        if (!checkedPref.includes(item.values()['pref'])) {
+                            isShown = false;
+                        }
+                    }
+
+                    var checkedCity = [];
+                    $('.city-checkbox:checked').each(function () {
+                        checkedCity.push($(this).val());
+                    });
+                    if (checkedCity.length > 0) {
+                        if (!checkedCity.includes(item.values()['city'])) {
+                            isShown = false;
+                        }
+                    }
+
+                    var checkedStation = [];
+                    $('.station-checkbox:checked').each(function () {
+                        checkedStation.push($(this).val());
+                    });
+                    if (checkedStation.length > 0) {
+                        if (!checkedStation.includes(item.values()['station'])) {
+                            isShown = false;
+                        }
+                    }
+
+                    var checkedCategory = [];
+                    $('.category-checkbox:checked').each(function () {
+                        checkedCategory.push($(this).val());
+                    });
+                    if (checkedCategory.length > 0) {
+                        if (!checkedCategory.includes(item.values()['category'])) {
+                            isShown = false;
+                        }
+                    }
+
+                    if ($('#pianoCheckbox').prop('checked')) {
+                        if (!item.values()['piano'].match(/〇/))
+                            isShown = false;
+                    }
+                    if ($('#percCheckbox').prop('checked')) {
+                        if (!item.values()['percussion'].match(/〇/))
+                            isShown = false;
+                    }
+                    if ($('#standCheckbox').prop('checked')) {
+                        if (!item.values()['stand'].match(/〇/))
+                            isShown = false;
+                    }
+
+                    if (isShown)
+                        L.marker([item.values()['latitude'], item.values()['longitude']], { title: item.values()['name'] }).addTo(markerLayer);
+                    return isShown;
+                }
+            );
+        });
     </script>
 </body>
 

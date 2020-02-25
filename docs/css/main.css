@@ -10,3 +10,8 @@
         text-decoration: none;
     }
 /* .list li:first-child {display:none;} */
+
+.side-nav i{
+    width:15px;
+    margin-right:5px;
+} 
