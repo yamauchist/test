@@ -122,7 +122,7 @@
                 <div class="uk-modal-body" uk-overflow-auto>
                     <span id="dialog_address"></span>
                     <div id="mapcontainer" style="height:50vh"></div>
-                    <a id="maplink" href="comgooglemaps://?daddr=35.658581,139.745433">地図アプリで見る</a>
+                    <a id="maplink" href="https://www.google.com/maps/search/?api=1&query=47.5951518,-122.3316393">地図アプリで見る</a>
                 </div>
                 <div class="uk-modal-footer uk-text-right">
                     <button class="uk-button uk-button-default uk-modal-close" type="button">閉じる</button>
@@ -340,7 +340,7 @@
                 markerLayer.clearLayers();
                 L.marker([$(this).find('.latitude').text(), $(this).find('.longitude').text()], { title: $(this).find('.name').text() }).addTo(markerLayer);
                 map.setView([$(this).find('.latitude').text(), $(this).find('.longitude').text()], 15);
-                $('#maplink').attr('href','comgooglemaps://?daddr='+$(this).find('.latitude').text()+','+$(this).find('.longitude').text());
+                $('#maplink').attr('href','https://www.google.com/maps/search/?api=1&query='+$(this).find('.latitude').text()+','+$(this).find('.longitude').text());
             });
         }
 
