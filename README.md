@@ -21,9 +21,9 @@
 
 ## クレジット
 
-* UIkit
-* Leaflet
-* OpenStreetMap
+* [UIkit](https://github.com/uikit/uikit/blob/develop/LICENSE.md)
+* [Leaflet](http://leafletjs.com)
+* [OpenStreetMap](http://osm.org/copyright)
 
-[1]:https://github.com/yamauchist/test/blob/master/LICENSE
-[2]:https://github.com/yamauchist/test/blob/master/CONTRIBUTING.md
+[1]:docs/LICENSE
+[2]:docs/CONTRIBUTING.md
