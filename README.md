@@ -15,7 +15,7 @@
 
 このサイトの情報の正誤については保証しません。また、このサイトの情報を利用したことでなにか問題が起こったとしても、作者は責任を負いません。
 
-## データを提供したい
+## コントリビューションガイドライン
 
 [このページ][2]を参照
 
@@ -25,5 +25,5 @@
 * [Leaflet](http://leafletjs.com)
 * [OpenStreetMap](http://osm.org/copyright)
 
-[1]:docs/LICENSE
-[2]:docs/CONTRIBUTING.md
+[1]:LICENSE
+[2]:CONTRIBUTING.md
