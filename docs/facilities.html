@@ -49,12 +49,25 @@
         </nav>
     </header>
     <main class="uk-padding-small">
+        <div class="uk-grid-collapse uk-child-width-expand" uk-grid>
+            <div>
+                <div class="uk-inline uk-width-1-1">
+                    <select class="uk-select">
+                        <option><i class="fas fa-sort-down"></i>名前順</option>
+                        <!--<option><i class="fas fa-sort-down"></i>住所順</option>-->
+                    </select>
+                </div>
+            </div>
+            <div>
+                <a class="uk-button uk-button-default uk-width-1-1" href="#modal-overflow" style="padding:0;" uk-toggle>
+                    <i class="fas fa-search"></i>条件検索
+                </a>
+            </div>
+            <div>
+                <button class="uk-button uk-button-default uk-width-1-1" type="button" id="map-toggle-button" uk-toggle="target: .toggle-content"><i class="fas fa-map-marker-alt"></i>マップ</button>
+            </div>
+        </div>
         <div class="uk-width-large">
-
-            <a class="uk-button uk-button-default uk-width-1-1" href="#modal-overflow" uk-toggle>
-                <i class="fas fa-search"></i>条件検索
-            </a>
-
             <div id="modal-overflow" uk-modal>
                 <div class="uk-modal-dialog">
                     <button class="uk-modal-close-default" type="button" uk-close></button>
@@ -122,7 +135,12 @@
             </div>
         </div>
 
-        <div class="uk-margin-top" id="facility-list">
+        <!--<div uk-spinner id="spinner"></div>-->
+
+        <div class="toggle-content" id="main-map" style="height:65vh;" hidden>
+
+        </div>
+        <div class="uk-margin-top toggle-content" id="facility-list">
             <ul class="list uk-list  uk-list-divider"> </ul>
             <ul class="uk-hidden" style="display:none;" id="list-template">
                 <li>
@@ -131,14 +149,16 @@
                             <span class="uk-hidden id" style="display:none;"></span>
                             <span class="name"></span>
                             <span class="room"></span>
-                            <span class="category uk-label"  style="display:none;"></span>
+                            <span class="category uk-label" style="display:none;"></span>
                         </p>
                         <div class="address-line">
+                            <i class="fas fa-map-marker-alt"></i>
                             <span class="pref"></span>
                             <span class="city"></span>
                             <span class="address"></span>
                         </div>
-                        <div class="uk-text-meta">
+                        <div class="station-line">
+                            <i class="fas fa-train"></i>
                             <span class="station"></span>
                             <span class="onfoot"></span>
                         </div>
@@ -148,11 +168,11 @@
                             <span class="fee"></span>
                         </div>
                         <div>
-                            <span class="parking uk-label"></span>
-                            <span class="piano uk-label"></span>
-                            <span class="percussion uk-label"></span>
+                            <span class="parking "></span>
+                            <span class="piano "></span>
+                            <span class="percussion "></span>
                             <span class="stand"></span>
-                            <div class=uk-hidden>
+                            <div style="display:none;">
                                 <span class="latitude"></span>
                                 <span class="longitude"></span>
                             </div>
@@ -167,11 +187,18 @@
             <div class="uk-modal-dialog">
                 <button class="uk-modal-close-default" type="button" uk-close></button>
                 <div class="uk-modal-header">
-                    <h2 class="uk-modal-title" id="dialogTitle">[名前]</h2>
+                    <h4 class="uk-modal-title" id="dialogTitle">[名前]</h4>
                 </div>
 
                 <div class="uk-modal-body" uk-overflow-auto>
-                    <span id="dialog_address"></span>
+                    <div class="address-line">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span id="dialog_address"></span>
+                    </div>
+                    <div class="station-line">
+                        <i class="fas fa-train"></i>
+                        <span id="dialog_station"></span>
+                    </div>
                     <div id="mapcontainer" style="height:50vh"></div>
                     <a id="maplink" href="https://www.google.com/maps/search/?api=1&query=47.5951518,-122.3316393">地図アプリで見る</a>
                 </div>
@@ -182,6 +209,8 @@
         Copyright &copy; 2020 kansai-orch-map Contributors All Rights Reserved.
     </footer>
     <script type="text/javascript">
+        var mainMap;
+        var mainMarkerLayer;
         var map;
         var markerLayer;
         function init() {
@@ -189,6 +218,11 @@
             map.setView([35.40, 136], 5);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: "<a href='http://osm.org/copyright' target='_blank'>OpenStreetMap</a> contributors" }).addTo(map);
             markerLayer = L.layerGroup().addTo(map);
+
+            mainMap = L.map('main-map');
+            mainMap.setView([34.701486, 135.486011], 8);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: "<a href='http://osm.org/copyright' target='_blank'>OpenStreetMap</a> contributors" }).addTo(mainMap);
+            mainMarkerLayer = L.layerGroup().addTo(mainMap);
         }
         init();
 
@@ -245,10 +279,10 @@
                         area: result[i][9],
                         capacity: result[i][10],
                         fee: result[i][11],
-                        parking: result[i][12] ? '駐車場:' + result[i][12] : '',
-                        piano: result[i][13] ? 'ピアノ:' + result[i][13] : '',
-                        percussion: result[i][14] ? '打楽器貸出:' + result[i][14] : '',
-                        stand: result[i][15] ? '譜面台貸出:' + result[i][15] : '',
+                        parking: result[i][12] && !result[i][12].includes('なし') ? '駐車場:' + result[i][12] : '',
+                        piano: result[i][13].includes('〇') ? 'ピアノあり' : '',
+                        percussion: result[i][14].includes('〇') ? '打楽器貸出あり' : '',
+                        stand: result[i][15].includes('〇') ? '譜面台貸出あり' : '',
                         appointFrom: result[i][16],
                         appointTo: result[i][17],
                         longitude: result[i][18],
@@ -258,9 +292,10 @@
                     facilities[i] = facility;
                     facilityList.add(facility);
 
-                    L.marker([facility.latitude, facility.longitude], { title: facility.name }).addTo(markerLayer);
+                    L.marker([facility.latitude, facility.longitude], { title: facility.name }).addTo(mainMarkerLayer);
                 }
             }
+            //$('#spinner').hide();
 
             var prefArray = facilities.map((x) => x.pref).filter((x, i, self) => x && self.indexOf(x) === i).sort((a, b) => a > b ? 1 : -1);
             prefArray.forEach(function (value) {
@@ -294,6 +329,9 @@
                 let address = facility.pref + facility.city + facility.address;
                 $('#dialog_address').text(address);
 
+                let station = facility.station + facility.onfoot;
+                $('#dialog_station').text(station);
+
                 markerLayer.clearLayers();
                 L.marker([facility.latitude, facility.longitude], { title: facility.name }).addTo(markerLayer);
                 map.setView([facility.latitude, facility.longitude], 15);
@@ -304,7 +342,19 @@
             });
         }
 
+        UIkit.util.on('.toggle-content', 'shown', function () {
+            console.log($('#main-map').prop('hidden'));
+            if ($('#main-map').prop('hidden')) {
+                $('#map-toggle-button').html(`<i class="fas fa-map-marker-alt"></i>マップ`);
+            }
+            else {
+                $('#map-toggle-button').html(`<i class="fas fa-list"></i>リスト`);
+                mainMap.invalidateSize();
+            }
+        });
+
         $('#search-button').on('click', function () {
+            mainMarkerLayer.clearLayers();
             facilityList.filter(
                 function (item) {
                     var isShown = true;
@@ -368,6 +418,10 @@
                         if (!item.values()['stand'].match(/〇/))
                             isShown = false;
                     }
+
+                    if (isShown)
+                        L.marker([item.values()['latitude'], item.values()['longitude']], { title: item.values()['name'] }).addTo(mainMarkerLayer);
+
                     return isShown;
                 }
             );
