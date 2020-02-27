@@ -15,3 +15,18 @@
     width:15px;
     margin-right:5px;
 } 
+
+.uk-label:empty
+ {
+    display: none;
+    }
+
+    .address-line:before {
+        content: "\f3c5";
+        font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+      }
+
+      .name-line{
+          margin:0;
+      }
