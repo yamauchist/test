@@ -163,6 +163,7 @@
                         </div>
                         <div class="station-line">
                             <i class="fas fa-train"></i>
+                            <span class="line"></span>
                             <span class="station"></span>
                             <span class="onfoot"></span>
                         </div>
@@ -286,6 +287,7 @@
                 'address',
                 'url',
                 'category',
+                'line',
                 'station',
                 'onfoot',
                 'area',
@@ -304,7 +306,7 @@
         var facilityList = new List('facility-list', options);
 
         var request = new XMLHttpRequest();
-        request.open("get", "https://raw.githubusercontent.com/yamauchist/test/master/docs/facilities.csv", true);
+        request.open("get", "facilities.csv", true);
         request.send(null);
 
         var facilities = [];
@@ -324,20 +326,21 @@
                         address: result[i][4],
                         url: result[i][5],
                         category: result[i][6],
-                        station: result[i][7] ? result[i][7] + '駅' : '',
-                        onfoot: result[i][8] ? '徒歩' + result[i][8] + '分' : '',
-                        area: result[i][9],
-                        capacity: result[i][10],
-                        fee: result[i][11],
-                        parking: result[i][12] && !result[i][12].includes('なし') ? '駐車場:' + result[i][12] : '',
-                        piano: result[i][13].includes('〇') ? 'ピアノあり' : '',
-                        percussion: result[i][14].includes('〇') ? '打楽器貸出あり' : '',
-                        stand: result[i][15].includes('〇') ? '譜面台貸出あり' : '',
-                        appointFrom: result[i][16],
-                        appointTo: result[i][17],
-                        longitude: result[i][18],
-                        latitude: result[i][19],
-                        description: result[i][20],
+                        line: result[i][7] ? result[i][7] + '駅' : '',
+                        station: result[i][8] ? result[i][8] + '駅' : '',
+                        onfoot: result[i][9] ? '徒歩' + result[i][9] + '分' : '',
+                        area: result[i][10],
+                        capacity: result[i][11],
+                        fee: result[i][12],
+                        parking: result[i][13] && !result[i][13].includes('なし') ? '駐車場:' + result[i][13] : '',
+                        piano: result[i][14].includes('〇') ? 'ピアノあり' : '',
+                        percussion: result[i][15].includes('〇') ? '打楽器貸出あり' : '',
+                        stand: result[i][16].includes('〇') ? '譜面台貸出あり' : '',
+                        appointFrom: result[i][17],
+                        appointTo: result[i][18],
+                        longitude: result[i][19],
+                        latitude: result[i][20],
+                        description: result[i][21],
                     }
                     facilities[i] = facility;
                     facilityList.add(facility);
@@ -380,7 +383,7 @@
                 let address = facility.pref + facility.city + facility.address;
                 $('#dialog_address').text(address);
 
-                let station = facility.station + facility.onfoot;
+                let station = facility.line+ facility.station + facility.onfoot;
                 $('#dialog_station').text(station);
 
                 markerLayer.clearLayers();
