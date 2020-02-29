@@ -16,8 +16,8 @@
     <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
           integrity="sha256-UzFD2WYH2U1dQpKDjjZK72VtPeWP50NoJjd26rnAdUI=" crossorigin="anonymous" /> -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.0/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.3.0/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="js/leaflet/leaflet.css" />
+    <script src="js/leaflet/leaflet.js"></script>
     <script src="js/uikit.min.js"></script>
     <script src="js/uikit-icons.min.js"></script>
     <script src="js/jquery-3.4.1.min.js"></script>
@@ -33,6 +33,8 @@
                 <li><a href="index.html"><i class="fas fa-home"></i>Home</a></li>
                 <li class="uk-active"><a href="facilities.html"><i class="fas fa-music"></i>練習場一覧</a></li>
                 <li><a href="concerthall.html"><i class="fas fa-university"></i>コンサートホール一覧</a></li>
+                <li class="uk-nav-divider"></li>
+                <li>Copyright &copy; 2020 kansai-orch-map Contributors All Rights Reserved.</li>
             </ul>
         </div>
     </div>
@@ -135,7 +137,9 @@
             </div>
         </div>
 
-        <!--<div uk-spinner id="spinner"></div>-->
+        <div id="spinner">
+            <img src="images/icon_loader_f_ww_01_s1.gif">
+        </div>
 
         <div class="toggle-content" id="main-map" style="height:65vh;" hidden>
 
@@ -205,9 +209,6 @@
             </div>
         </div>
     </main>
-    <footer class="uk-padding-small uk-background-secondary uk-light">
-        Copyright &copy; 2020 kansai-orch-map Contributors All Rights Reserved.
-    </footer>
     <script type="text/javascript">
         var mainMap;
         var mainMarkerLayer;
@@ -225,6 +226,55 @@
             mainMarkerLayer = L.layerGroup().addTo(mainMap);
         }
         init();
+
+        function getMarker(facility) {
+            var query = facility.latitude + ',' + facility.longitude;
+            if (facility.address)
+                query = facility.address;
+            var sucontents = `<div>
+                                        <p class="uk-text-lead name-line">
+                                            <span class="uk-hidden id" style="display:none;"></span>
+                                            <span class="name">`+ facility.name + `</span>
+                                            <span class="room">`+ facility.room + `</span>
+                                            <span class="category uk-label" style="display:none;"></span>
+                                        </p>
+                                        <div class="address-line">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            <span class="pref">`+ facility.pref + `</span>
+                                            <span class="city">`+ facility.city + `</span>
+                                            <span class="address">`+ facility.address + `</span>
+                                        </div>
+                                        <div class="station-line">
+                                            <i class="fas fa-train"></i>
+                                            <span class="station">`+ facility.station + `</span>
+                                            <span class="onfoot">`+ facility.onfoot + `</span>
+                                        </div>
+                                        <a href="https://www.google.com/maps/search/?api=1&query=`+ query + `">地図アプリで開く</a>
+                                    </div>`;
+
+            let icon = new L.Icon({
+                iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            });
+
+            if (facility.category == 'アンサンブル用') {
+                icon = new L.Icon({
+                    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34],
+                    shadowSize: [41, 41]
+                });
+            }
+            var popup1 = L.popup({ maxWidth: 550 }).setContent(sucontents);
+            let marker = L.marker([facility.latitude, facility.longitude], { title: facility.name, icon: icon }).bindPopup(popup1).bindTooltip(facility.name);
+            return marker;
+        }
 
         var options = {
             valueNames: [
@@ -257,10 +307,10 @@
         request.open("get", "https://raw.githubusercontent.com/yamauchist/test/master/docs/facilities.csv", true);
         request.send(null);
 
+        var facilities = [];
         request.onload = function () {
             var result = [];
             var line = request.responseText.split("\n");
-            var facilities = [];
 
             for (var i = 1; i < line.length; ++i) {
                 if (line[i]) {
@@ -292,10 +342,11 @@
                     facilities[i] = facility;
                     facilityList.add(facility);
 
-                    L.marker([facility.latitude, facility.longitude], { title: facility.name }).addTo(mainMarkerLayer);
+                    let marker = getMarker(facility);
+                    marker.addTo(mainMarkerLayer);
                 }
             }
-            //$('#spinner').hide();
+            $('#spinner').hide();
 
             var prefArray = facilities.map((x) => x.pref).filter((x, i, self) => x && self.indexOf(x) === i).sort((a, b) => a > b ? 1 : -1);
             prefArray.forEach(function (value) {
@@ -407,20 +458,23 @@
                     }
 
                     if ($('#pianoCheckbox').prop('checked')) {
-                        if (!item.values()['piano'].match(/〇/))
+                        if (!item.values()['piano'].match(/あり/))
                             isShown = false;
                     }
                     if ($('#percCheckbox').prop('checked')) {
-                        if (!item.values()['percussion'].match(/〇/))
+                        if (!item.values()['percussion'].match(/あり/))
                             isShown = false;
                     }
                     if ($('#standCheckbox').prop('checked')) {
-                        if (!item.values()['stand'].match(/〇/))
+                        if (!item.values()['stand'].match(/あり/))
                             isShown = false;
                     }
 
-                    if (isShown)
-                        L.marker([item.values()['latitude'], item.values()['longitude']], { title: item.values()['name'] }).addTo(mainMarkerLayer);
+                    if (isShown) {
+                        let facility = facilities[item.values()['id']];
+                        let marker = getMarker(facility);
+                        marker.addTo(mainMarkerLayer);
+                    }
 
                     return isShown;
                 }
