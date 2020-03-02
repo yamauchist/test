@@ -9,6 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="施設まとめ">
+    <meta name="google-site-verification" content="OVa4nTI08BfJPdU7rFYoQvHZsNadsOuwxmZwFf5QQWY" />
     <link rel="apple-touch-icon" href="images/icon152.png">
 
     <link rel="stylesheet" href="css/uikit.theme.min.css" />
@@ -56,9 +57,14 @@
             <div id="button-grid" class="uk-grid-collapse uk-child-width-expand" uk-grid>
                 <div>
                     <div class="uk-inline uk-width-1-1">
-                        <select class="uk-select">
-                            <option><i class="fas fa-sort-down"></i>名前順</option>
-                            <!--<option><i class="fas fa-sort-down"></i>住所順</option>-->
+                        <select class="uk-select" id="sort-select">
+                            <option>名前順</option>
+                            <option>住所順</option>
+                            <option>駅名順</option>
+                            <option>駅から近い順</option>
+                            <option>広い順</option>
+                            <option>定員順</option>
+                            <option>安い順</option>
                         </select>
                     </div>
                 </div>
@@ -240,25 +246,25 @@
             if (facility.address)
                 query = facility.address;
             var sucontents = `<div>
-                                            <p class="uk-text-lead name-line">
-                                                <span class="uk-hidden id" style="display:none;"></span>
-                                                <span class="name">`+ facility.name + `</span>
-                                                <span class="room">`+ facility.room + `</span>
-                                                <span class="category uk-label" style="display:none;"></span>
-                                            </p>
-                                            <div class="address-line">
-                                                <i class="fas fa-map-marker-alt"></i>
-                                                <span class="pref">`+ facility.pref + `</span>
-                                                <span class="city">`+ facility.city + `</span>
-                                                <span class="address">`+ facility.address + `</span>
-                                            </div>
-                                            <div class="station-line">
-                                                <i class="fas fa-train"></i>
-                                                <span class="station">`+ facility.station + `</span>
-                                                <span class="onfoot">`+ facility.onfoot + `</span>
-                                            </div>
-                                            <a href="https://www.google.com/maps/search/?api=1&query=`+ query + `">地図アプリで開く</a>
-                                        </div>`;
+                                                        <p class="uk-text-lead name-line">
+                                                            <span class="uk-hidden id" style="display:none;"></span>
+                                                            <span class="name">`+ facility.name + `</span>
+                                                            <span class="room">`+ facility.room + `</span>
+                                                            <span class="category uk-label" style="display:none;"></span>
+                                                        </p>
+                                                        <div class="address-line">
+                                                            <i class="fas fa-map-marker-alt"></i>
+                                                            <span class="pref">`+ facility.pref + `</span>
+                                                            <span class="city">`+ facility.city + `</span>
+                                                            <span class="address">`+ facility.address + `</span>
+                                                        </div>
+                                                        <div class="station-line">
+                                                            <i class="fas fa-train"></i>
+                                                            <span class="station">`+ facility.station + `</span>
+                                                            <span class="onfoot">`+ facility.onfoot + `</span>
+                                                        </div>
+                                                        <a href="https://www.google.com/maps/search/?api=1&query=`+ query + `">地図アプリで開く</a>
+                                                    </div>`;
 
             let icon = new L.Icon({
                 iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
@@ -410,6 +416,35 @@
             else {
                 $('#map-toggle-button').html(`<i class="fas fa-list"></i>リスト`);
                 mainMap.invalidateSize();
+            }
+        });
+
+
+        $('#sort-select').on('change', function () {
+            if ($(this).val() == '住所順') {
+                facilityList.sort('address', { order: "asc" });
+                facilityList.sort('city', { order: "asc" });
+                facilityList.sort('pref', { order: "asc" });
+            }
+            if ($(this).val() == '駅名順') {
+                facilityList.sort('station', { order: "asc" });
+                facilityList.sort('line', { order: "asc" });
+            }
+            if ($(this).val() == '駅から近い順') {
+                facilityList.sort('onfoot', { order: "asc" });
+            }
+            if ($(this).val() == '広い順') {
+                facilityList.sort('area', { order: "asc" });
+            }
+            if ($(this).val() == '定員順') {
+                facilityList.sort('capacity', { order: "asc" });
+            }
+            if ($(this).val() == '安い順') {
+                facilityList.sort('fee', { order: "asc" });
+            }
+            if ($(this).val() == '名前順') {
+                facilityList.sort('room', { order: "asc" });
+                facilityList.sort('name', { order: "asc" });
             }
         });
 
