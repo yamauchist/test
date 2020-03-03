@@ -47,11 +47,9 @@ self.addEventListener('fetch', function (event) {
                     // キャッシュがあったのでそのレスポンスを返す
                     if (response) {
                         //Cache
-                        console.log("Cache:" + url);
                         return response;
                     }
                     //Network
-                    console.log("Network:" + url);
                     return fetch(event.request).then(req => {
                         //***Cacheに追加 [Cache固定の場合はコメント！] ***
                         //if(req.ok) cache.put(event.request,req.clone());
@@ -97,7 +95,6 @@ function offlineAsset(url) {
 // ActivatedEvent
 //************************************************
 self.addEventListener('activate', event => {
-    console.log('service worker: activate');
     event.waitUntil(
         caches.keys().then(keylist => {
             return Promise.all(

@@ -25,6 +25,8 @@
     <script src="js/jquery-3.4.1.min.js"></script>
     <script src="js/list.js"></script>
     <script src="js/list.pagination.min.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -231,16 +233,26 @@
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: "<a href='http://osm.org/copyright' target='_blank'>OpenStreetMap</a> contributors" }).addTo(map);
             markerLayer = L.layerGroup().addTo(map);
 
-            mainMap = L.map('main-map');
-            mainMap.setView([34.701486, 135.486011], 8);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: "<a href='http://osm.org/copyright' target='_blank'>OpenStreetMap</a> contributors", detectRetina: true }).addTo(mainMap);
-            mainMarkerLayer = L.layerGroup().addTo(mainMap);
+            mapboxgl.accessToken = 'pk.eyJ1IjoieWFtYXVjaGlzdCIsImEiOiJjazdiNTEzNWgxYjk0M2ZwN25yd2h5MmVpIn0.8pQ-2DCw-p2Zpwcb5Z9Pmg';
+
+
+            mainMap =new mapboxgl.Map({
+                container: 'main-map', // container id
+                style: 'mapbox://styles/yamauchist/ck7c08jjx00ts1iogyzkgj60m', // stylesheet location
+                center: [135.486011,34.701486], // starting position [lng, lat]
+                zoom: 9 // starting zoom
+            });
+            //mainMap = L.map('main-map');
+            //mainMap.setView([34.701486, 135.486011], 8);
+            //L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: "<a href='http://osm.org/copyright' target='_blank'>OpenStreetMap</a> contributors", detectRetina: true }).addTo(mainMap);
+            //mainMarkerLayer = L.layerGroup().addTo(mainMap);
         }
         init();
 
 
         var mapHeight = $(window).height() - $('header').height() - $('#button-grid').height() - 30;
         $('#main-map').height(mapHeight);
+        mainMap.resize();
 
         function getMarker(facility) {
             var query = facility.latitude + ',' + facility.longitude;
@@ -359,8 +371,12 @@
                     facilities[i] = facility;
                     facilityList.add(facility);
 
-                    let marker = getMarker(facility);
-                    marker.addTo(mainMarkerLayer);
+                    //let marker = getMarker(facility);
+                    //marker.addTo(mainMarkerLayer);
+
+                    var marker = new mapboxgl.Marker()
+                        .setLngLat([facility.longitude, facility.latitude])
+                        .addTo(mainMap);
                 }
             }
             $('#spinner').hide();
@@ -416,7 +432,8 @@
             }
             else {
                 $('#map-toggle-button').html(`<i class="fas fa-list"></i>リスト`);
-                mainMap.invalidateSize();
+                mainMap.resize();
+                //mainMap.invalidateSize();
             }
         });
 
@@ -450,7 +467,7 @@
         });
 
         $('#search-button').on('click', function () {
-            mainMarkerLayer.clearLayers();
+            //mainMarkerLayer.clearLayers();
             facilityList.filter(
                 function (item) {
                     var isShown = true;
@@ -518,7 +535,7 @@
                     if (isShown) {
                         let facility = facilities[item.values()['id']];
                         let marker = getMarker(facility);
-                        marker.addTo(mainMarkerLayer);
+                        //marker.addTo(mainMarkerLayer);
                     }
 
                     return isShown;
