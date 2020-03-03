@@ -10,6 +10,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="施設まとめ">
     <meta name="google-site-verification" content="OVa4nTI08BfJPdU7rFYoQvHZsNadsOuwxmZwFf5QQWY" />
+    <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="images/icon152.png">
 
     <link rel="stylesheet" href="css/uikit.theme.min.css" />
@@ -44,7 +45,7 @@
                 </a>
             </div>
             <div class="uk-navbar-left uk-text-bold">
-                <span class="uk-navbar-item uk-logo">関西音楽系施設まとめ</span> 
+                <span class="uk-navbar-item uk-logo">関西音楽系施設まとめ</span>
             </div>
         </nav>
     </header>
@@ -71,7 +72,7 @@
         <h2>
             プロジェクトページ
         </h2>
-            <a href="https://github.com/yamauchist/test/tree/master">githubのリポジトリページ</a>へ
+        <a href="https://github.com/yamauchist/test/tree/master">githubのリポジトリページ</a>へ
         <h2>コントリビューションガイドライン</h2>
         <a href="https://github.com/yamauchist/test/blob/master/CONTRIBUTING.md">このページ</a>を参照してください。
         <h2>Powered By</h2>
@@ -86,6 +87,16 @@
     <footer class="uk-padding-small uk-background-secondary uk-light">
         Copyright &copy; 2020 kansai-orch-map Contributors All Rights Reserved.
     </footer>
+    <script type="text/javascript">
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((reg) => {
+                        console.log('Service worker registered.', reg);
+                    });
+            });
+        }
+    </script>
 </body>
 
 </html>
