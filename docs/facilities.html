@@ -5,13 +5,19 @@
     <title>関西音楽系施設まとめ - 練習場一覧</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="オーケストラ,練習場,アンサンブル,施設,音楽,まとめ,コンサートホール">
+    <meta name="description" content="関西の音楽練習場、コンサートホールの情報をまとめています。">
+    <meta http-equiv="content-language" content="ja">
+    <meta http-equiv="default-style" content="main.css">
+    <link rel="icon" href="images/icons/favicon.ico">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="施設まとめ">
+    <link rel="apple-touch-icon" href="images/icon152.png">
+
     <meta name="google-site-verification" content="OVa4nTI08BfJPdU7rFYoQvHZsNadsOuwxmZwFf5QQWY" />
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="images/icon152.png">
 
     <link rel="stylesheet" href="css/uikit.theme.min.css" />
     <link rel="stylesheet" href="css/main.css" />
@@ -236,10 +242,10 @@
             mapboxgl.accessToken = 'pk.eyJ1IjoieWFtYXVjaGlzdCIsImEiOiJjazdiNTEzNWgxYjk0M2ZwN25yd2h5MmVpIn0.8pQ-2DCw-p2Zpwcb5Z9Pmg';
 
 
-            mainMap =new mapboxgl.Map({
+            mainMap = new mapboxgl.Map({
                 container: 'main-map', // container id
                 style: 'mapbox://styles/yamauchist/ck7c08jjx00ts1iogyzkgj60m', // stylesheet location
-                center: [135.486011,34.701486], // starting position [lng, lat]
+                center: [135.486011, 34.701486], // starting position [lng, lat]
                 zoom: 9 // starting zoom
             });
             //mainMap = L.map('main-map');
@@ -250,34 +256,41 @@
         init();
 
 
-        var mapHeight = $(window).height() - $('header').height() - $('#button-grid').height() - 30;
-        $('#main-map').height(mapHeight);
-        mainMap.resize();
+        function resize() {
+            var mapHeight = window.innerHeight - $('header').height() - $('#button-grid').height() - 30;
+            $('#main-map').height(mapHeight);
+            mainMap.resize();
+        }
+        resize();
+
+        window.onresize = function () {
+            resize();
+        };
 
         function getMarker(facility) {
             var query = facility.latitude + ',' + facility.longitude;
             if (facility.address)
                 query = facility.address;
             var sucontents = `<div>
-                                                        <p class="uk-text-lead name-line">
-                                                            <span class="uk-hidden id" style="display:none;"></span>
-                                                            <span class="name">`+ facility.name + `</span>
-                                                            <span class="room">`+ facility.room + `</span>
-                                                            <span class="category uk-label" style="display:none;"></span>
-                                                        </p>
-                                                        <div class="address-line">
-                                                            <i class="fas fa-map-marker-alt"></i>
-                                                            <span class="pref">`+ facility.pref + `</span>
-                                                            <span class="city">`+ facility.city + `</span>
-                                                            <span class="address">`+ facility.address + `</span>
-                                                        </div>
-                                                        <div class="station-line">
-                                                            <i class="fas fa-train"></i>
-                                                            <span class="station">`+ facility.station + `</span>
-                                                            <span class="onfoot">`+ facility.onfoot + `</span>
-                                                        </div>
-                                                        <a href="https://www.google.com/maps/search/?api=1&query=`+ query + `">地図アプリで開く</a>
-                                                    </div>`;
+                                                                <p class="uk-text-lead name-line">
+                                                                    <span class="uk-hidden id" style="display:none;"></span>
+                                                                    <span class="name">`+ facility.name + `</span>
+                                                                    <span class="room">`+ facility.room + `</span>
+                                                                    <span class="category uk-label" style="display:none;"></span>
+                                                                </p>
+                                                                <div class="address-line">
+                                                                    <i class="fas fa-map-marker-alt"></i>
+                                                                    <span class="pref">`+ facility.pref + `</span>
+                                                                    <span class="city">`+ facility.city + `</span>
+                                                                    <span class="address">`+ facility.address + `</span>
+                                                                </div>
+                                                                <div class="station-line">
+                                                                    <i class="fas fa-train"></i>
+                                                                    <span class="station">`+ facility.station + `</span>
+                                                                    <span class="onfoot">`+ facility.onfoot + `</span>
+                                                                </div>
+                                                                <a href="https://www.google.com/maps/search/?api=1&query=`+ query + `">地図アプリで開く</a>
+                                                            </div>`;
 
             let icon = new L.Icon({
                 iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
