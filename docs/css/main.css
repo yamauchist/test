@@ -76,7 +76,7 @@
 
 #spinner {
     text-align: center;
-    margin-top:20px;    
+    margin-top: 20px;
 }
 
 .leaflet-marker-icon-color-blue {
@@ -107,4 +107,18 @@
 .leaflet-marker-icon-color-alua {
     -webkit-filter: hue-rotate(330deg);
     filter: hue-rotate(330deg);
+}
+
+.marker {
+    background-color: #1378b3;
+    background-size: cover;
+    border: solid #ffffff 3px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.facility-marker {
+    background-color: mediumvioletred;
 }
