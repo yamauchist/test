@@ -9,6 +9,7 @@
     <meta name="description" content="関西の音楽練習場、コンサートホールの情報をまとめています。">
     <meta http-equiv="content-language" content="ja">
     <meta http-equiv="default-style" content="main.css">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
     <link rel="icon" href="images/icons/favicon.ico">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -31,6 +32,7 @@
     <script src="js/jquery-3.4.1.min.js"></script>
     <script src="js/list.js"></script>
     <script src="js/list.pagination.min.js"></script>
+    <script src="js/main.js"></script>
     <script src="https://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.css" rel="stylesheet" />
 </head>
@@ -44,7 +46,7 @@
                 <li><a href="facilities.html"><i class="fas fa-music"></i>練習場一覧</a></li>
                 <li class="uk-active"><a href="concerthall.html"><i class="fas fa-university"></i>コンサートホール一覧</a></li>
                 <li class="uk-nav-divider"></li>
-                <li>Copyright &copy; 2020 kansai-orch-map Contributors All Rights Reserved.</li>
+                <li>Copyright &copy; 2020 kansai-mfd Contributors All Rights Reserved.</li>
             </ul>
         </div>
     </div>
@@ -61,7 +63,6 @@
         </nav>
     </header>
     <div class="uk-container uk-container-small uk-padding-remove">
-
         <main class="uk-padding-small">
             <div id="button-grid" class="uk-grid-collapse uk-child-width-expand" uk-grid>
                 <div>
@@ -158,9 +159,31 @@
                 <img src="images/icon_loader_f_ww_01_s1.gif">
             </div>
 
-            <div class="toggle-content" id="main-map" style="height:65vh;" hidden>
+            <div class="toggle-content" id="main-map" style="height:65vh;" hidden> </div>
 
+            <div id="map-popup-template" style="display:none;">
+                <div>
+                    <p class="uk-text-lead name-line">
+                        <span class="uk-hidden id" style="display:none;"></span>
+                        <span class="name"></span>
+                        <span class="room"></span>
+                        <span class="category uk-label" style="display:none;"></span>
+                    </p>
+                    <div class="address-line">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span class="pref"></span>
+                        <span class="city"></span>
+                        <span class="address"></span>
+                    </div>
+                    <div class="station-line">
+                        <i class="fas fa-train"></i>
+                        <span class="station"></span>
+                        <span class="onfoot"></span>
+                    </div>
+                    <a class="open-map">地図アプリで開く</a>
+                </div>
             </div>
+
             <div class="uk-margin-top toggle-content" id="facility-list">
                 <ul class="list uk-list"> </ul>
                 <ul class="uk-hidden" style="display:none;" id="list-template">
@@ -275,96 +298,7 @@
             resize();
         };
 
-        function getMarker(facility) {
-            var query = facility.latitude + ',' + facility.longitude;
-            if (facility.address)
-                query = facility.address;
-            var sucontents = `<div>
-                                                                                                        <p class="uk-text-lead name-line">
-                                                                                                            <span class="uk-hidden id" style="display:none;"></span>
-                                                                                                            <span class="name">`+ facility.name + `</span>
-                                                                                                            <span class="room">`+ facility.room + `</span>
-                                                                                                            <span class="category uk-label" style="display:none;"></span>
-                                                                                                        </p>
-                                                                                                        <div class="address-line">
-                                                                                                            <i class="fas fa-map-marker-alt"></i>
-                                                                                                            <span class="pref">`+ facility.pref + `</span>
-                                                                                                            <span class="city">`+ facility.city + `</span>
-                                                                                                            <span class="address">`+ facility.address + `</span>
-                                                                                                        </div>
-                                                                                                        <div class="station-line">
-                                                                                                            <i class="fas fa-train"></i>
-                                                                                                            <span class="station">`+ facility.station + `</span>
-                                                                                                            <span class="onfoot">`+ facility.onfoot + `</span>
-                                                                                                        </div>
-                                                                                                        <a href="https://www.google.com/maps/search/?api=1&query=`+ query + `">地図アプリで開く</a>
-                                                                                                    </div>`;
-
-            //let icon = new L.Icon({
-            //    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-            //    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-            //    iconSize: [25, 41],
-            //    iconAnchor: [12, 41],
-            //    popupAnchor: [1, -34],
-            //    shadowSize: [41, 41]
-            //});
-
-            //if (facility.category == 'アンサンブル用') {
-            //    icon = new L.Icon({
-            //        iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-            //        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-            //        iconSize: [25, 41],
-            //        iconAnchor: [12, 41],
-            //        popupAnchor: [1, -34],
-            //        shadowSize: [41, 41]
-            //    });
-            //}
-            //var popup1 = L.popup({ maxWidth: 550 }).setContent(sucontents);
-            //let marker = L.marker([facility.latitude, facility.longitude], { title: facility.name, icon: icon }).bindPopup(popup1);
-            //return marker;
-
-            var el = document.createElement('div');
-            el.className = 'marker';
-
-            if (facility.category == 'アンサンブル用') {
-                $(el).addClass('facility-marker');
-            }
-
-            var marker = new mapboxgl.Marker(el)
-                .setLngLat([facility.longitude, facility.latitude])
-                .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
-                    .setHTML(sucontents))
-                .addTo(mainMap);
-
-            return marker;
-        }
-
-        var options = {
-            valueNames: [
-                'id',
-                'name',
-                'room',
-                'pref',
-                'city',
-                'address',
-                'url',
-                'category',
-                'line',
-                'station',
-                'onfoot',
-                'area',
-                'capacity',
-                'fee',
-                'parking',
-                'piano',
-                'percussion',
-                'stand',
-                'description',
-                'latitude',
-                'longitude'
-            ],
-            item: $('#list-template').html().trim()
-        };
+        var options = getListOptions('#list-template');
         var facilityList = new List('facility-list', options);
 
         var request = new XMLHttpRequest();
@@ -373,42 +307,16 @@
 
         var facilities = [];
         request.onload = function () {
-            var result = [];
             var line = request.responseText.split("\n");
 
             for (var i = 1; i < line.length; ++i) {
                 if (line[i]) {
-                    result[i] = line[i].split(',');
-                    let facility = {
-                        id: i,
-                        name: result[i][0],
-                        room: result[i][1],
-                        pref: result[i][2],
-                        city: result[i][3],
-                        address: result[i][4],
-                        url: result[i][5],
-                        category: result[i][6],
-                        line: result[i][7] ? result[i][7] + '駅' : '',
-                        station: result[i][8] ? result[i][8] + '駅' : '',
-                        onfoot: result[i][9] ? '徒歩' + result[i][9] + '分' : '',
-                        depth: result[i][10],
-                        width: result[i][11],
-                        capacity: result[i][12],
-                        fee: result[i][13],
-                        parking: result[i][14] && !result[i][14].includes('なし') ? '駐車場:' + result[i][14] : '',
-                        piano: result[i][15].includes('〇') ? 'ピアノあり' : '',
-                        percussion: result[i][16].includes('〇') ? '打楽器貸出あり' : '',
-                        stand: result[i][17].includes('〇') ? '譜面台貸出あり' : '',
-                        appointFrom: result[i][18],
-                        appointTo: result[i][19],
-                        longitude: result[i][20],
-                        latitude: result[i][21],
-                        description: result[i][22],
-                    }
+                    let facility = convertToConcertHall(line[i]);
+                    facility.id = i;
                     facilities[i] = facility;
                     facilityList.add(facility);
 
-                    let marker = getMarker(facility);
+                    let marker = getMarker(facility, '#map-popup-template');
                     //marker.addTo(mainMarkerLayer);
 
                     marker.addTo(mainMap);
@@ -597,7 +505,7 @@
                     if (isShown) {
                         let facility = facilities[item.values()['id']];
 
-                        let marker = getMarker(facility);
+                        let marker = getMarker(facility, '#map-popup-template');
                         //marker.addTo(mainMarkerLayer);
 
                         marker.addTo(mainMap);
