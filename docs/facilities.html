@@ -233,24 +233,33 @@
         var mainMarkerLayer;
         var map;
         var markerLayer;
+        var detailMarker;
         function init() {
-            map = L.map('mapcontainer');
-            map.setView([35.40, 136], 5);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: "<a href='http://osm.org/copyright' target='_blank'>OpenStreetMap</a> contributors" }).addTo(map);
-            markerLayer = L.layerGroup().addTo(map);
+            //map = L.map('mapcontainer');
+            //map.setView([35.40, 136], 5);
+            //L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: "<a href='http://osm.org/copyright' target='_blank'>OpenStreetMap</a> contributors" }).addTo(map);
+            //markerLayer = L.layerGroup().addTo(map);
 
-            mapboxgl.accessToken = 'pk.eyJ1IjoieWFtYXVjaGlzdCIsImEiOiJjazdiNTEzNWgxYjk0M2ZwN25yd2h5MmVpIn0.8pQ-2DCw-p2Zpwcb5Z9Pmg';
-
-            mainMap = new mapboxgl.Map({
-                container: 'main-map', // container id
-                style: 'mapbox://styles/yamauchist/ck7c08jjx00ts1iogyzkgj60m', // stylesheet location
-                center: [135.486011, 34.701486], // starting position [lng, lat]
-                zoom: 9 // starting zoom
-            });
             //mainMap = L.map('main-map');
             //mainMap.setView([34.701486, 135.486011], 8);
             //L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: "<a href='http://osm.org/copyright' target='_blank'>OpenStreetMap</a> contributors", detectRetina: true }).addTo(mainMap);
             //mainMarkerLayer = L.layerGroup().addTo(mainMap);
+
+            mapboxgl.accessToken = 'pk.eyJ1IjoieWFtYXVjaGlzdCIsImEiOiJjazdiNTEzNWgxYjk0M2ZwN25yd2h5MmVpIn0.8pQ-2DCw-p2Zpwcb5Z9Pmg';
+
+            map = new mapboxgl.Map({
+                container: 'mapcontainer', // container id
+                style: 'mapbox://styles/yamauchist/ck7cy2v8w0hfr1ilnpqaps4an', // stylesheet location
+                center: [135.486011, 34.701486], // starting position [lng, lat]
+                zoom: 9 // starting zoom
+            });
+
+            mainMap = new mapboxgl.Map({
+                container: 'main-map', // container id
+                style: 'mapbox://styles/yamauchist/ck7cy2v8w0hfr1ilnpqaps4an', // stylesheet location
+                center: [135.486011, 34.701486], // starting position [lng, lat]
+                zoom: 9 // starting zoom
+            });
         }
         init();
 
@@ -271,47 +280,62 @@
             if (facility.address)
                 query = facility.address;
             var sucontents = `<div>
-                                                                    <p class="uk-text-lead name-line">
-                                                                        <span class="uk-hidden id" style="display:none;"></span>
-                                                                        <span class="name">`+ facility.name + `</span>
-                                                                        <span class="room">`+ facility.room + `</span>
-                                                                        <span class="category uk-label" style="display:none;"></span>
-                                                                    </p>
-                                                                    <div class="address-line">
-                                                                        <i class="fas fa-map-marker-alt"></i>
-                                                                        <span class="pref">`+ facility.pref + `</span>
-                                                                        <span class="city">`+ facility.city + `</span>
-                                                                        <span class="address">`+ facility.address + `</span>
-                                                                    </div>
-                                                                    <div class="station-line">
-                                                                        <i class="fas fa-train"></i>
-                                                                        <span class="station">`+ facility.station + `</span>
-                                                                        <span class="onfoot">`+ facility.onfoot + `</span>
-                                                                    </div>
-                                                                    <a href="https://www.google.com/maps/search/?api=1&query=`+ query + `">地図アプリで開く</a>
-                                                                </div>`;
+                                                                                                    <p class="uk-text-lead name-line">
+                                                                                                        <span class="uk-hidden id" style="display:none;"></span>
+                                                                                                        <span class="name">`+ facility.name + `</span>
+                                                                                                        <span class="room">`+ facility.room + `</span>
+                                                                                                        <span class="category uk-label" style="display:none;"></span>
+                                                                                                    </p>
+                                                                                                    <div class="address-line">
+                                                                                                        <i class="fas fa-map-marker-alt"></i>
+                                                                                                        <span class="pref">`+ facility.pref + `</span>
+                                                                                                        <span class="city">`+ facility.city + `</span>
+                                                                                                        <span class="address">`+ facility.address + `</span>
+                                                                                                    </div>
+                                                                                                    <div class="station-line">
+                                                                                                        <i class="fas fa-train"></i>
+                                                                                                        <span class="station">`+ facility.station + `</span>
+                                                                                                        <span class="onfoot">`+ facility.onfoot + `</span>
+                                                                                                    </div>
+                                                                                                    <a href="https://www.google.com/maps/search/?api=1&query=`+ query + `">地図アプリで開く</a>
+                                                                                                </div>`;
 
-            let icon = new L.Icon({
-                iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                popupAnchor: [1, -34],
-                shadowSize: [41, 41]
-            });
+            //let icon = new L.Icon({
+            //    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+            //    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            //    iconSize: [25, 41],
+            //    iconAnchor: [12, 41],
+            //    popupAnchor: [1, -34],
+            //    shadowSize: [41, 41]
+            //});
+
+            //if (facility.category == 'アンサンブル用') {
+            //    icon = new L.Icon({
+            //        iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+            //        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            //        iconSize: [25, 41],
+            //        iconAnchor: [12, 41],
+            //        popupAnchor: [1, -34],
+            //        shadowSize: [41, 41]
+            //    });
+            //}
+            //var popup1 = L.popup({ maxWidth: 550 }).setContent(sucontents);
+            //let marker = L.marker([facility.latitude, facility.longitude], { title: facility.name, icon: icon }).bindPopup(popup1);
+            //return marker;
+
+            var el = document.createElement('div');
+            el.className = 'marker';
 
             if (facility.category == 'アンサンブル用') {
-                icon = new L.Icon({
-                    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                    iconSize: [25, 41],
-                    iconAnchor: [12, 41],
-                    popupAnchor: [1, -34],
-                    shadowSize: [41, 41]
-                });
+                $(el).addClass('facility-marker');
             }
-            var popup1 = L.popup({ maxWidth: 550 }).setContent(sucontents);
-            let marker = L.marker([facility.latitude, facility.longitude], { title: facility.name, icon: icon }).bindPopup(popup1);
+
+            var marker = new mapboxgl.Marker(el)
+                .setLngLat([facility.longitude, facility.latitude])
+                .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+                    .setHTML(sucontents))
+                .addTo(mainMap);
+
             return marker;
         }
 
@@ -383,19 +407,11 @@
                     facilities[i] = facility;
                     facilityList.add(facility);
 
-                    //let marker = getMarker(facility);
+                    let marker = getMarker(facility);
                     //marker.addTo(mainMarkerLayer);
 
-                    var el = document.createElement('div');
-                    el.className = 'marker';
-
-                    if (facility.category == 'アンサンブル用') {
-                        $(el).addClass('facility-marker');
-                    }
-
-                    var marker = new mapboxgl.Marker(el)
-                        .setLngLat([facility.longitude, facility.latitude])
-                        .addTo(mainMap);
+                    marker.addTo(mainMap);
+                    markers.push(marker);
                 }
             }
             $('#spinner').hide();
@@ -435,13 +451,30 @@
                 let station = facility.line + facility.station + facility.onfoot;
                 $('#dialog_station').text(station);
 
-                markerLayer.clearLayers();
-                L.marker([facility.latitude, facility.longitude], { title: facility.name }).addTo(markerLayer);
-                map.setView([facility.latitude, facility.longitude], 15);
                 if (facility.address)
                     $('#maplink').attr('href', 'https://www.google.com/maps/search/?api=1&query=' + address);
                 else
                     $('#maplink').attr('href', 'https://www.google.com/maps/search/?api=1&query=' + facility.latitude + ',' + facility.longitude);
+
+                //markerLayer.clearLayers();
+                //L.marker([facility.latitude, facility.longitude], { title: facility.name }).addTo(markerLayer);
+                //map.setView([facility.latitude, facility.longitude], 15);
+
+                if (detailMarker)
+                    detailMarker.remove();
+
+                var el = document.createElement('div');
+                el.className = 'marker';
+
+                if (facility.category == 'アンサンブル用') {
+                    $(el).addClass('facility-marker');
+                }
+
+                var detailMarker = new mapboxgl.Marker(el)
+                    .setLngLat([facility.longitude, facility.latitude])
+                    .addTo(map);
+                map.setCenter([facility.longitude, facility.latitude]);
+                map.setZoom(15);
             });
         }
 
@@ -485,8 +518,17 @@
             }
         });
 
-        $('#search-button').on('click', function () {
+        var markers = [];
+        function clearMarker() {
             //mainMarkerLayer.clearLayers();
+            for (let i in markers) {
+                markers[i].remove();
+            }
+            markers = [];
+        }
+
+        $('#search-button').on('click', function () {
+            clearMarker();
             facilityList.filter(
                 function (item) {
                     var isShown = true;
@@ -553,8 +595,12 @@
 
                     if (isShown) {
                         let facility = facilities[item.values()['id']];
+
                         let marker = getMarker(facility);
                         //marker.addTo(mainMarkerLayer);
+
+                        marker.addTo(mainMap);
+                        markers.push(marker);
                     }
 
                     return isShown;
