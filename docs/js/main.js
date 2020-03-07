@@ -64,7 +64,7 @@ function initializeFacilitiesPage() {
                 facilities[i] = facility;
                 facilityList.add(facility);
 
-                let marker = getMarker(facility,'#map-popup-template');
+                let marker = getMarker(facility, '#map-popup-template');
                 //marker.addTo(mainMarkerLayer);
 
                 marker.addTo(mainMap);
@@ -72,6 +72,9 @@ function initializeFacilitiesPage() {
             }
         }
         $('#spinner').hide();
+
+        facilityList.sort('room', { order: "asc" });
+        facilityList.sort('name', { order: "asc" });
 
         var prefArray = facilities.map((x) => x.pref).filter((x, i, self) => x && self.indexOf(x) === i).sort((a, b) => a > b ? 1 : -1);
         prefArray.forEach(function (value) {
@@ -90,7 +93,7 @@ function initializeFacilitiesPage() {
 
         var stationArray = facilities.map((x) => x.station).filter((x, i, self) => x && self.indexOf(x) === i).sort((a, b) => a > b ? 1 : -1);
         stationArray.forEach(function (value) {
-            $('#stationList').append('<li><label><input class="uk-checkbox station-checkbox" type="checkbox" value="' + value + '駅" >' + value + '駅</label>');
+            $('#stationList').append('<li><label><input class="uk-checkbox station-checkbox" type="checkbox" value="' + value + '" >' + value + '</label>');
         });
 
         var categoryArray = facilities.map((x) => x.category).filter((x, i, self) => x && self.indexOf(x) === i).sort((a, b) => a > b ? 1 : -1);
@@ -108,10 +111,14 @@ function initializeFacilitiesPage() {
             let station = facility.line + facility.station + facility.onfoot;
             $('#dialog_station').text(station);
 
+            $('#detail-url').text(facility.url);
+            $('#detail-url').attr('href',facility.url);
+
             if (facility.address)
                 $('#maplink').attr('href', 'https://www.google.com/maps/search/?api=1&query=' + address);
             else
                 $('#maplink').attr('href', 'https://www.google.com/maps/search/?api=1&query=' + facility.latitude + ',' + facility.longitude);
+            $('#maplink').attr('href', 'https://www.google.com/maps/search/?api=1&query=' + facility.name.replace(' ','+'));
 
             //markerLayer.clearLayers();
             //L.marker([facility.latitude, facility.longitude], { title: facility.name }).addTo(markerLayer);
@@ -267,7 +274,7 @@ function initializeFacilitiesPage() {
 }
 
 function convertToFacility(line) {
-    let columns = line.split(',');
+    let columns = $.csv.toArrays(line)[0];
     let facility = {
         name: columns[0],
         room: columns[1],
@@ -335,6 +342,7 @@ function getMarker(facility, contentSelector) {
     sucontents.find('.room').text(facility.room);
     sucontents.find('.pref').text(facility.pref);
     sucontents.find('.city').text(facility.city);
+    sucontents.find('.address').text(facility.address);
     sucontents.find('.line').text(facility.line);
     sucontents.find('.station').text(facility.station);
     sucontents.find('.onfoot').text(facility.onfoot);

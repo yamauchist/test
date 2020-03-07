@@ -32,6 +32,7 @@
     <script src="js/jquery-3.4.1.min.js"></script>
     <script src="js/list.js"></script>
     <script src="js/list.pagination.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.8/jquery.csv.min.js"></script>
     <script src="js/main.js"></script>
     <script src="https://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.css" rel="stylesheet" />
@@ -225,7 +226,7 @@
                                     <span class="longitude"></span>
                                 </div>
                             </div>
-                            <div class="url"></div>
+                            <div class="url" style="display:none;"></div>
                         </a>
                     </li>
                 </ul>
@@ -247,6 +248,7 @@
                             <i class="fas fa-train"></i>
                             <span id="dialog_station"></span>
                         </div>
+                        <a id="detail-url" target="_blank"></a>
                         <div id="mapcontainer" style="height:50vh"></div>
                         <a id="maplink" href="https://www.google.com/maps/search/?api=1&query=47.5951518,-122.3316393">地図アプリで見る</a>
                     </div>
