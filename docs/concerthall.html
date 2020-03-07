@@ -116,7 +116,7 @@
                                         <ul id="stationList" class="uk-list"></ul>
                                     </div>
                                 </li>
-                                <li>
+                                <li style="display:none">
                                     <a class="uk-accordion-title" href="#">分類</a>
                                     <div class="uk-accordion-content">
                                         <ul id="categoryList" class="uk-list"></ul>
@@ -133,8 +133,8 @@
                                 </li>
                                 <li>
                                     <label>
-                                        <input id="percCheckbox" class="uk-checkbox" type="checkbox"
-                                               value="perc">打楽器貸出あり
+                                        <input id="child-checkbox" class="uk-checkbox" type="checkbox"
+                                               value="child">親子室あり
                                     </label>
                                 </li>
                                 <li>
@@ -258,16 +258,6 @@
         var markerLayer;
         var detailMarker;
         function init() {
-            //map = L.map('mapcontainer');
-            //map.setView([35.40, 136], 5);
-            //L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: "<a href='http://osm.org/copyright' target='_blank'>OpenStreetMap</a> contributors" }).addTo(map);
-            //markerLayer = L.layerGroup().addTo(map);
-
-            //mainMap = L.map('main-map');
-            //mainMap.setView([34.701486, 135.486011], 8);
-            //L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: "<a href='http://osm.org/copyright' target='_blank'>OpenStreetMap</a> contributors", detectRetina: true }).addTo(mainMap);
-            //mainMarkerLayer = L.layerGroup().addTo(mainMap);
-
             mapboxgl.accessToken = 'pk.eyJ1IjoieWFtYXVjaGlzdCIsImEiOiJjazdiem93cTkwOHhwM2ZwYTFzMmx6bXg2In0.VJZV5mGnqi_055RCBx3Ouw';
 
             map = new mapboxgl.Map({
@@ -383,7 +373,7 @@
                     .setLngLat([facility.longitude, facility.latitude])
                     .addTo(map);
                 map.setCenter([facility.longitude, facility.latitude]);
-                map.setZoom(15);
+                map.setZoom(14);
             });
         }
 
@@ -495,6 +485,10 @@
                     }
                     if ($('#percCheckbox').prop('checked')) {
                         if (!item.values()['percussion'].match(/あり/))
+                            isShown = false;
+                    }
+                    if ($('#child-checkbox').prop('checked')) {
+                        if (!item.values()['child'].match(/あり/))
                             isShown = false;
                     }
                     if ($('#standCheckbox').prop('checked')) {

@@ -7,30 +7,20 @@ function initializeFacilitiesPage() {
     var markerLayer;
     var detailMarker;
     function init() {
-        //map = L.map('mapcontainer');
-        //map.setView([35.40, 136], 5);
-        //L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: "<a href='http://osm.org/copyright' target='_blank'>OpenStreetMap</a> contributors" }).addTo(map);
-        //markerLayer = L.layerGroup().addTo(map);
-
-        //mainMap = L.map('main-map');
-        //mainMap.setView([34.701486, 135.486011], 8);
-        //L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: "<a href='http://osm.org/copyright' target='_blank'>OpenStreetMap</a> contributors", detectRetina: true }).addTo(mainMap);
-        //mainMarkerLayer = L.layerGroup().addTo(mainMap);
-
         mapboxgl.accessToken = 'pk.eyJ1IjoieWFtYXVjaGlzdCIsImEiOiJjazdiem93cTkwOHhwM2ZwYTFzMmx6bXg2In0.VJZV5mGnqi_055RCBx3Ouw';
 
         map = new mapboxgl.Map({
-            container: 'mapcontainer', // container id
-            style: 'mapbox://styles/yamauchist/ck7cy2v8w0hfr1ilnpqaps4an', // stylesheet location
-            center: [135.486011, 34.701486], // starting position [lng, lat]
-            zoom: 9 // starting zoom
+            container: 'mapcontainer', 
+            style: 'mapbox://styles/yamauchist/ck7cy2v8w0hfr1ilnpqaps4an', 
+            center: [135.486011, 34.701486], 
+            zoom: 9 
         });
 
         mainMap = new mapboxgl.Map({
-            container: 'main-map', // container id
-            style: 'mapbox://styles/yamauchist/ck7cy2v8w0hfr1ilnpqaps4an', // stylesheet location
-            center: [135.486011, 34.701486], // starting position [lng, lat]
-            zoom: 9 // starting zoom
+            container: 'main-map', 
+            style: 'mapbox://styles/yamauchist/ck7cy2v8w0hfr1ilnpqaps4an',
+            center: [135.486011, 34.701486], 
+            zoom: 9 
         });
     }
     init();
@@ -65,7 +55,6 @@ function initializeFacilitiesPage() {
                 facilityList.add(facility);
 
                 let marker = getMarker(facility, '#map-popup-template');
-                //marker.addTo(mainMarkerLayer);
 
                 marker.addTo(mainMap);
                 markers.push(marker);
@@ -120,10 +109,6 @@ function initializeFacilitiesPage() {
                 $('#maplink').attr('href', 'https://www.google.com/maps/search/?api=1&query=' + facility.latitude + ',' + facility.longitude);
             $('#maplink').attr('href', 'https://www.google.com/maps/search/?api=1&query=' + facility.name.replace(' ','+'));
 
-            //markerLayer.clearLayers();
-            //L.marker([facility.latitude, facility.longitude], { title: facility.name }).addTo(markerLayer);
-            //map.setView([facility.latitude, facility.longitude], 15);
-
             if (detailMarker)
                 detailMarker.remove();
 
@@ -138,7 +123,7 @@ function initializeFacilitiesPage() {
                 .setLngLat([facility.longitude, facility.latitude])
                 .addTo(map);
             map.setCenter([facility.longitude, facility.latitude]);
-            map.setZoom(15);
+            map.setZoom(14);
         });
     }
 
@@ -149,7 +134,6 @@ function initializeFacilitiesPage() {
         else {
             $('#map-toggle-button').html(`<i class="fas fa-list"></i>リスト`);
             mainMap.resize();
-            //mainMap.invalidateSize();
         }
     });
 
@@ -184,7 +168,6 @@ function initializeFacilitiesPage() {
 
     var markers = [];
     function clearMarker() {
-        //mainMarkerLayer.clearLayers();
         for (let i in markers) {
             markers[i].remove();
         }
@@ -261,7 +244,6 @@ function initializeFacilitiesPage() {
                     let facility = facilities[item.values()['id']];
 
                     let marker = getMarker(facility, '#map-popup-template');
-                    //marker.addTo(mainMarkerLayer);
 
                     marker.addTo(mainMap);
                     markers.push(marker);
@@ -333,55 +315,32 @@ function convertToConcertHall(line) {
 }
 
 function getMarker(facility, contentSelector) {
-    var query = facility.latitude + ',' + facility.longitude;
+    let query = facility.latitude + ',' + facility.longitude;
     if (facility.address)
         query = facility.address;
-    var sucontents = $($(contentSelector).html().trim());
+    let content = $($(contentSelector).html().trim());
 
-    sucontents.find('.name').text(facility.name);
-    sucontents.find('.room').text(facility.room);
-    sucontents.find('.pref').text(facility.pref);
-    sucontents.find('.city').text(facility.city);
-    sucontents.find('.address').text(facility.address);
-    sucontents.find('.line').text(facility.line);
-    sucontents.find('.station').text(facility.station);
-    sucontents.find('.onfoot').text(facility.onfoot);
-    sucontents.find('.open-map').attr('href', 'https://www.google.com/maps/search/?api=1&query=' + query);
+    content.find('.name').text(facility.name);
+    content.find('.room').text(facility.room);
+    content.find('.pref').text(facility.pref);
+    content.find('.city').text(facility.city);
+    content.find('.address').text(facility.address);
+    content.find('.line').text(facility.line);
+    content.find('.station').text(facility.station);
+    content.find('.onfoot').text(facility.onfoot);
+    content.find('.open-map').attr('href', 'https://www.google.com/maps/search/?api=1&query=' + query);
 
-    //let icon = new L.Icon({
-    //    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-    //    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-    //    iconSize: [25, 41],
-    //    iconAnchor: [12, 41],
-    //    popupAnchor: [1, -34],
-    //    shadowSize: [41, 41]
-    //});
-
-    //if (facility.category == 'アンサンブル用') {
-    //    icon = new L.Icon({
-    //        iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-    //        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-    //        iconSize: [25, 41],
-    //        iconAnchor: [12, 41],
-    //        popupAnchor: [1, -34],
-    //        shadowSize: [41, 41]
-    //    });
-    //}
-    //var popup1 = L.popup({ maxWidth: 550 }).setContent(sucontents);
-    //let marker = L.marker([facility.latitude, facility.longitude], { title: facility.name, icon: icon }).bindPopup(popup1);
-    //return marker;
-
-    var el = document.createElement('div');
+    let el = document.createElement('div');
     el.className = 'marker';
 
     if (facility.category == 'アンサンブル用') {
         $(el).addClass('facility-marker');
     }
 
-    var marker = new mapboxgl.Marker(el)
+    let marker = new mapboxgl.Marker(el)
         .setLngLat([facility.longitude, facility.latitude])
         .setPopup(new mapboxgl.Popup({ offset: 25 })
-            .setHTML(sucontents.prop('outerHTML')))
+            .setHTML(content.prop('outerHTML')))
 
     return marker;
 }
