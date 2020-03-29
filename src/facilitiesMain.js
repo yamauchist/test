@@ -7,7 +7,9 @@ import Icons from 'uikit/dist/js/uikit-icons';
 
 import "mapbox-gl/dist/mapbox-gl.css";
 
-export function initializeFacilitiesPage() {
+import { getMarker,getListOptions } from "./common";
+
+export function facilitiesMain() {
     var mainMap;
     var map;
     var mainMarkerLayer;
@@ -289,98 +291,4 @@ function convertToFacility(line) {
         description: columns[21],
     }
     return facility;
-}
-
-function convertToConcertHall(line) {
-    let columns = line.split(',');
-    let facility = {
-        name: columns[0],
-        room: columns[1],
-        pref: columns[2],
-        city: columns[3],
-        address: columns[4],
-        url: columns[5],
-        category: columns[6],
-        line: columns[7] ? columns[7] + '駅' : '',
-        station: columns[8] ? columns[8] + '駅' : '',
-        onfoot: columns[9] ? '徒歩' + columns[9] + '分' : '',
-        depth: columns[10],
-        width: columns[11],
-        capacity: columns[12],
-        fee: columns[13],
-        parking: columns[14] && !columns[14].includes('なし') ? '駐車場:' + columns[14] : '',
-        piano: columns[15].includes('〇') ? 'ピアノあり' : '',
-        stand: columns[16].includes('〇') ? '譜面台貸出あり' : '',
-        child: columns[17].includes('〇') ? '親子室あり' : '',
-        appointFrom: columns[18],
-        appointTo: columns[19],
-        longitude: columns[20],
-        latitude: columns[21],
-        description: columns[22],
-    }
-    return facility;
-}
-
-function getMarker(facility, contentSelector) {
-    let query = facility.latitude + ',' + facility.longitude;
-    if (facility.address)
-        query = facility.address;
-    let content = $($(contentSelector).html().trim());
-
-    content.find('.name').text(facility.name);
-    content.find('.room').text(facility.room);
-    content.find('.pref').text(facility.pref);
-    content.find('.city').text(facility.city);
-    content.find('.address').text(facility.address);
-    content.find('.line').text(facility.line);
-    content.find('.station').text(facility.station);
-    content.find('.onfoot').text(facility.onfoot);
-    content.find('.open-map').attr('href', 'https://www.google.com/maps/search/?api=1&query=' + query);
-
-    let el = document.createElement('div');
-    el.className = 'marker';
-
-    if (facility.category == 'アンサンブル用') {
-        $(el).addClass('facility-marker');
-    }
-
-    let marker = new mapboxgl.Marker(el)
-        .setLngLat([facility.longitude, facility.latitude])
-        .setPopup(new mapboxgl.Popup({ offset: 25 })
-            .setHTML(content.prop('outerHTML')))
-
-    return marker;
-}
-
-function getListOptions(template) {
-    let options = {
-        valueNames: [
-            'id',
-            'name',
-            'room',
-            'pref',
-            'city',
-            'address',
-            'url',
-            'category',
-            'line',
-            'station',
-            'onfoot',
-            'area',
-            'depth',
-            'width',
-            'capacity',
-            'fee',
-            'parking',
-            'piano',
-            'percussion',
-            'stand',
-            'child',
-            'description',
-            'latitude',
-            'longitude'
-        ],
-        item: $(template).html().trim()
-    };
-    return options;
 }
