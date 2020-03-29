@@ -10,18 +10,23 @@ module.exports = {
     // メインとなるJavaScriptファイル（エントリーポイント）
     entry: `./src/index.js`,
     devServer: {
-        contentBase: "dist",
-        open: true
+        contentBase: "docs",
+        open: true,
+        watchContentBase: true
       },
     // ファイルの出力設定
     output: {
       //  出力ファイルのディレクトリ名
-      path: `${__dirname}/dist`,
+      path: `${__dirname}/docs`,
       // 出力ファイル名
       filename: "main.js"
     },
     module: {
         rules: [
+          {
+            test: /\.css$/,
+            loaders: ['style-loader', 'css-loader']
+          },
           // Lessファイルの読み込みとコンパイル
           {
             test: /\.less/, // 対象となるファイルの拡張子
