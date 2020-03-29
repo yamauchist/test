@@ -30,6 +30,10 @@
   },
   "dependencies": {
     "css-loader": "^3.4.2",
+    "ejs": "^3.0.1",
+    "ejs-html-loader": "^4.0.1",
+    "html-loader": "^1.0.0",
+    "html-webpack-plugin": "^4.0.3",
     "jquery": "^3.4.1",
     "jquery-csv": "^1.0.11",
     "less": "^3.11.1",

@@ -1,9 +1,11 @@
 // [定数] webpack の出力オプションを指定します
 // 'production' か 'development' を指定
-const MODE = "development";
+const MODE = "production";
 
 // ソースマップの利用有無(productionのときはソースマップを利用しない)
 const enabledSourceMap = MODE === "development";
+
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   mode: MODE,
@@ -23,6 +25,13 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test : /\.ejs$/,
+        use  : [
+          'html-loader',
+          'ejs-html-loader'
+        ]
+      },
       // CSSファイルの読み込み
       {
         // 対象となるファイルの拡張子
@@ -74,5 +83,11 @@ module.exports = {
         ]
       }
     ]
-  }
+  },
+  plugins : [
+    new HtmlWebpackPlugin({
+      filename: 'index.html',
+      template: 'src/index.ejs'
+    })
+  ]
 };

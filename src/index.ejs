@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <% const title = '関西音楽系施設まとめ'; %>
+<head>
+    <title><%= title %></title>
+    <%- include(`templates/_head`) -%>
+</head>
+
+<body>
+    <%- include(`templates/_sidenav`) -%>
+    <%- include(`templates/_navbar`) -%>
+
+    <div class="uk-container uk-container-small uk-padding-remove">
+        <main class="uk-padding-small">
+            <h2>このサイトについて</h2>
+            <p>関西の音楽練習場、コンサートホールの情報をまとめています。各種条件で検索することができます。</p>
+            <ul class="uk-list">
+                <li><a href="facilities.html">練習場一覧</a></li>
+                <li><a href="concerthall.html">コンサートホール一覧</a></li>
+            </ul>
+            <h2>利用規約</h2>
+            <p>
+                <a href="https://github.com/yamauchist/test/blob/master/LICENSE">MITライセンス</a>です。商用利用問わず、自由に利用することができます。
+            </p>
+            <p>
+                著作権表示と<a href="https://github.com/yamauchist/test/blob/master/LICENSE"> ライセンス全文 </a>を同梱すれば、自由に改変、再配布が可能です。
+            </p>
+            <p>
+                当サイトのコンテンツや情報において、可能な限り正確な情報を掲載するよう努めています。しかし、誤情報が入り込んだり、情報が古くなったりすることもあります。必ずしも正確性を保証するものではありません。また合法性や安全性なども保証しません。
+            </p>
+            <p>
+                当サイトに掲載された内容によって生じた損害等の一切の責任を負いかねますので、ご了承ください。
+            </p>
+            <h2>
+                プロジェクトページ
+            </h2>
+            <a href="https://github.com/yamauchist/test/tree/master">githubのリポジトリページ</a>へ
+            <h2>コントリビューションガイドライン</h2>
+            <a href="https://github.com/yamauchist/test/blob/master/CONTRIBUTING.md">このページ</a>を参照してください。
+            <h2>Powered By</h2>
+            <ul class="uk-list">
+                <li><a href="https://jquery.com" target="_blank">jQuery</a></li>
+                <li><a href="https://fontawesome.com" target="_blank">Font Awesome</a></li>
+                <li><a href="https://github.com/uikit/uikit/blob/develop/LICENSE.md" target="_blank">UIkit</a> </li>
+                <li><a href="http://leafletjs.com" target="_blank" title="A JS library for interactive maps">Leaflet</a> </li>
+                <li><a href="http://osm.org/copyright" target="_blank">OpenStreetMap</a></li>
+            </ul>
+        </main>
+    </div>
+    <script type="text/javascript">
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((reg) => {
+                        console.log('Service worker registered.', reg);
+                    });
+            });
+        }
+    </script>
+</body>
+
+</html>
