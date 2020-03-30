@@ -6,6 +6,7 @@ const MODE = (process.env.NODE_ENV) || "development";
 const enabledSourceMap = MODE === "development";
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
   mode: MODE,
@@ -39,7 +40,7 @@ module.exports = {
         // ローダー名
         use: [
           // linkタグに出力する機能
-          "style-loader",
+          MODE === "development" ? "style-loader" : MiniCssExtractPlugin.loader,
           // CSSをバンドルするための機能
           {
             loader: "css-loader",
@@ -57,7 +58,7 @@ module.exports = {
         test: /\.less/, // 対象となるファイルの拡張子
         use: [
           // linkタグに出力する機能
-          "style-loader",
+          MODE === "development" ? "style-loader" : MiniCssExtractPlugin.loader,
           // CSSをバンドルするための機能
           {
             loader: "css-loader",
@@ -85,6 +86,9 @@ module.exports = {
     ]
   },
   plugins : [
+    new MiniCssExtractPlugin({
+      filename: 'css/main.css'
+    }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'src/index.ejs'
