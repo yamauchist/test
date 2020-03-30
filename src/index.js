@@ -12,9 +12,7 @@ import { concerthallMain } from "./concerthallMain";
 import "./css/main.css";
 
 $(function () {
-    console.log(location.pathname)
     if (location.pathname.includes('facilities')) {
-        console.log('enter facilities main');
         facilitiesMain();
     }
 
