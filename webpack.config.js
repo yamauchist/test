@@ -1,6 +1,6 @@
 // [定数] webpack の出力オプションを指定します
 // 'production' か 'development' を指定
-const MODE = "production";
+const MODE = (process.env.NODE_ENV) || "development";
 
 // ソースマップの利用有無(productionのときはソースマップを利用しない)
 const enabledSourceMap = MODE === "development";
