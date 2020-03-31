@@ -27,8 +27,23 @@ module.exports = {
   module: {
     rules: [
       {
-        test : /\.ejs$/,
-        use  : [
+        test: /\.(jpg|png|gif)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: 'images/',
+              /* es2015ならば
+              publicPath : path => '../' + path
+              で書けます。*/
+            }
+          }
+        ]
+      },
+      {
+        test: /\.ejs$/,
+        use: [
           'html-loader',
           'ejs-html-loader'
         ]
@@ -85,13 +100,21 @@ module.exports = {
       }
     ]
   },
-  plugins : [
+  plugins: [
     new MiniCssExtractPlugin({
       filename: 'css/main.css'
     }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'src/index.ejs'
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'facilities.html',
+      template: 'src/facilities.ejs'
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'concerthall.html',
+      template: 'src/concerthall.ejs'
     })
   ]
 };
