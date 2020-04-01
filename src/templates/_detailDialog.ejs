@@ -1,0 +1,22 @@
+<div id="modal-detail" uk-modal>
+    <div class="uk-modal-dialog">
+        <button class="uk-modal-close-default" type="button" uk-close></button>
+        <div class="uk-modal-header">
+            <h4 class="uk-modal-title" id="dialogTitle">[名前]</h4>
+        </div>
+
+        <div class="uk-modal-body" uk-overflow-auto>
+            <div class="address-line">
+                <i class="fas fa-map-marker-alt"></i>
+                <span id="dialog_address"></span>
+            </div>
+            <div class="station-line">
+                <i class="fas fa-train"></i>
+                <span id="dialog_station"></span>
+            </div>
+            <a id="detail-url" target="_blank"></a>
+            <div id="mapcontainer" style="height:50vh"></div>
+            <a id="maplink" href="https://www.google.com/maps/search/?api=1&query=47.5951518,-122.3316393">地図アプリで見る</a>
+        </div>
+    </div>
+</div>
