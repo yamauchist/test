@@ -7,6 +7,9 @@ const enabledSourceMap = MODE === "development";
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const workboxPlugin = require('workbox-webpack-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+
 
 module.exports = {
   mode: MODE,
@@ -100,6 +103,11 @@ module.exports = {
       }
     ]
   },
+  optimization: {
+    minimizer: [
+      new OptimizeCSSAssetsPlugin() // CSS の minify を行う
+    ]
+  },
   plugins: [
     new MiniCssExtractPlugin({
       filename: 'css/main.css'
@@ -115,6 +123,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       filename: 'concerthall.html',
       template: 'src/concerthall.ejs'
-    })
+    }),
+    new workboxPlugin.GenerateSW()
   ]
 };
