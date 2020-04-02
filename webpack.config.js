@@ -124,6 +124,6 @@ module.exports = {
       filename: 'concerthall.html',
       template: 'src/concerthall.ejs'
     }),
-    new workboxPlugin.GenerateSW()
+    // new workboxPlugin.GenerateSW()
   ]
 };
