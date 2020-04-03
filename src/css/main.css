@@ -109,18 +109,12 @@
     filter: hue-rotate(330deg);
 }
 
-.marker {
-    background-color: #1378b3;
-    background-size: cover;
-    border: solid #ffffff 3px;
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    cursor: pointer;
+.marker path{
+    fill:#1378b3;
 }
 
-.facility-marker {
-    background-color: mediumvioletred;
+.facility-marker path{
+    fill: mediumvioletred;
 }
 
 #button-grid .uk-button{
